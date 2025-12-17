@@ -623,28 +623,35 @@
           setStep((prev) => prev - 1);
           window.scrollTo({ top: 0, behavior: "smooth" });
         };
-
         const handleSubmit = async (e) => {
     e.preventDefault();
     addLog('navigationAttempt', { action: 'submit' });
     
-    if (validateForm()) {  // ✅ Changed from validateStep(step)
+    if (validateStep(step)) {
         const endTime = performance.now();
         const completionTime = ((endTime - (firstInteraction || endTime)) / 1000).toFixed(2);
         const totalErrors = logs.filter(l => l.event === 'validationError').length;
         
-        addLog('formSubmit', { 
-            timestamp: endTime, 
-            completionTime,
-            totalErrors,
-            errorCategories
-        });
-        
         // Get variant from URL
         const urlParams = new URLSearchParams(window.location.search);
-        const currentVariant = urlParams.get('variant') || 'B';  // ← 'A' for VariantA
+        const currentVariant = urlParams.get('variant') || 'B';  // ← 'B' for VariantB
         
-        // ✅ SAVE DATA IN CORRECT FORMAT
+        // Create the final submit log entry
+        const submitLog = {
+            participantID: participantId.current,
+            variant: 'B',
+            timestamp: endTime,
+            event: 'formSubmit',
+            step: step,
+            completionTime: completionTime,
+            totalErrors: totalErrors,
+            errorCategories: errorCategories
+        };
+        
+        // Add submit log to current logs
+        const finalLogs = [...logs, submitLog];
+        
+        // ✅ SAVE DATA IN CORRECT FORMAT FOR ENHANCED EXPORT
         const logKey = `logs_${currentVariant}`;
         const allLogs = JSON.parse(localStorage.getItem(logKey) || '{}');
         
@@ -653,26 +660,26 @@
             completionTime: completionTime,
             totalErrors: totalErrors,
             errorCategories: errorCategories,
-            totalEvents: logs.length,
+            totalEvents: finalLogs.length,
             firstInteraction: firstInteraction,
             formSubmitTime: endTime,
-            detailedLogs: logs  // ✅ This is critical for field-level analytics!
+            detailedLogs: finalLogs  // ✅ Essential for field-level analytics!
         };
         
         localStorage.setItem(logKey, JSON.stringify(allLogs));
-        console.log('✅ Saved to localStorage:', logKey, allLogs);
+        console.log('✅ Saved to localStorage:', logKey);
         
-        // Update status
+        // Update status in formStudyData
         const storedData = JSON.parse(localStorage.getItem('formStudyData') || '{}');
         localStorage.setItem('formStudyData', JSON.stringify({
             ...storedData,
             status: {
                 ...storedData.status,
                 [currentVariant]: {
-                    status: 'complete', 
+                    status: 'complete',
                     errors: totalErrors,
                     errorCategories,
-                    time: completionTime 
+                    time: completionTime
                 }
             }
         }));
@@ -695,7 +702,7 @@
             }, 3000);
         }
     }
-};
+};  
         const renderField = (fieldConfig) => {
           const {
             name,
