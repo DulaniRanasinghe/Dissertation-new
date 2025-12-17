@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Export Study Data</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- JSZip library for creating ZIP files -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 </head>
 <body class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-8">
@@ -19,12 +18,12 @@
                 <h2 class="font-bold text-lg mb-2">Instructions:</h2>
                 <p class="text-gray-700">Click the button below to download all collected data as a ZIP file containing:</p>
                 <ul class="list-disc ml-6 mt-2 text-gray-700">
-                    <li>variant_a_data.csv - Variant A form interaction logs</li>
-                    <li>variant_b_data.csv - Variant B form interaction logs</li>
-                    <li>variant_c_data.csv - Variant C form interaction logs</li>
+                    <li>variant_a_data.csv - Detailed field-level analytics for Variant A</li>
+                    <li>variant_b_data.csv - Detailed field-level analytics for Variant B</li>
+                    <li>variant_c_data.csv - Detailed field-level analytics for Variant C</li>
                     <li>nasa_tlx_data.csv - All NASA-TLX workload scores</li>
                     <li>interview_data.csv - Interview metadata</li>
-                    <li>audio/ folder - All interview audio recordings organized by participant</li>
+                    <li>audio/ folder - All interview audio recordings</li>
                 </ul>
             </div>
 
@@ -58,8 +57,7 @@
                 </div>
             </div>
 
-            <button id="exportBtn" 
-                    onclick="exportAllData()"
+            <button id="exportBtn" onclick="exportAllData()"
                     class="w-full bg-green-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-green-700 transition shadow-lg">
                 📥 Step 1: Download Data as ZIP
             </button>
@@ -72,124 +70,116 @@
             </div>
         </div>
 
-        <!-- Direct Upload Section (appears after download) -->
-        <!-- REPLACE THE ENTIRE directUploadSection WITH THIS CODE -->
+        <!-- Google Drive Upload Section -->
+        <div id="directUploadSection" class="hidden bg-white rounded-xl shadow-2xl p-8 mb-6">
+            <div class="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-500 rounded-xl p-6 shadow-lg">
+                <div class="flex items-center gap-3 mb-6">
+                    <svg class="w-16 h-16 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <div>
+                        <h2 class="text-3xl font-bold text-gray-900">✅ Download Complete!</h2>
+                        <p class="text-lg text-gray-700">File saved: <span id="fileName" class="font-mono font-semibold text-green-700"></span></p>
+                    </div>
+                </div>
 
-<!-- Google Drive Upload Section (appears after download) -->
-<div id="directUploadSection" class="hidden bg-white rounded-xl shadow-2xl p-8 mb-6">
-    <div class="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-500 rounded-xl p-6 shadow-lg">
-        <div class="flex items-center gap-3 mb-6">
-            <svg class="w-16 h-16 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-            <div>
-                <h2 class="text-3xl font-bold text-gray-900">✅ Download Complete!</h2>
-                <p class="text-lg text-gray-700">File saved: <span id="fileName" class="font-mono font-semibold text-green-700"></span></p>
-            </div>
-        </div>
+                <div class="bg-blue-100 border-l-4 border-blue-600 p-6 mb-6 rounded-lg">
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">📤 Step 2: Upload to Google Drive</h3>
+                    <p class="text-gray-800 text-lg">Click the button below to upload your ZIP file to the research folder.</p>
+                </div>
 
-        <div class="bg-blue-100 border-l-4 border-blue-600 p-6 mb-6 rounded-lg">
-            <h3 class="text-2xl font-bold text-gray-900 mb-4">📤 Step 2: Upload to Google Drive</h3>
-            <p class="text-gray-800 text-lg">Click the button below to upload your ZIP file to the research folder.</p>
-        </div>
+                <div class="bg-white rounded-xl p-8 mb-6 border-2 border-blue-200 shadow-lg">
+                    <div class="flex items-start gap-4 mb-6">
+                        <div class="text-5xl">☁️</div>
+                        <div class="flex-1">
+                            <h4 class="font-bold text-2xl text-gray-900 mb-4">Upload to Google Drive</h4>
+                            
+                            <button onclick="openDriveUpload()" 
+                                    class="w-full bg-blue-600 text-white px-8 py-6 rounded-xl font-bold text-2xl hover:bg-blue-700 transition shadow-lg hover:shadow-xl transform hover:scale-[1.02] mb-6">
+                                📁 Open Upload Folder
+                            </button>
 
-        <!-- Google Drive Upload -->
-        <div class="bg-white rounded-xl p-8 mb-6 border-2 border-blue-200 shadow-lg">
-            <div class="flex items-start gap-4 mb-6">
-                <div class="text-5xl">☁️</div>
-                <div class="flex-1">
-                    <h4 class="font-bold text-2xl text-gray-900 mb-4">Upload to Google Drive</h4>
-                    
-                    <!-- Big Upload Button -->
-                    <button onclick="openDriveUpload()" 
-                            class="w-full bg-blue-600 text-white px-8 py-6 rounded-xl font-bold text-2xl hover:bg-blue-700 transition shadow-lg hover:shadow-xl transform hover:scale-[1.02] mb-6">
-                        📁 Open Upload Folder
+                            <div class="bg-blue-50 rounded-lg p-6">
+                                <p class="font-bold text-lg text-gray-900 mb-4">📝 Follow these steps:</p>
+                                <ol class="space-y-3 text-gray-700">
+                                    <li class="flex items-start gap-3">
+                                        <span class="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">1</span>
+                                        <span class="pt-1">Click <strong>"Open Upload Folder"</strong> button above</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">2</span>
+                                        <span class="pt-1">In Google Drive, click <strong>"New"</strong> → <strong>"File upload"</strong></span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">3</span>
+                                        <span class="pt-1">Select ZIP file from Downloads:<br>
+                                        <span class="font-mono text-sm bg-gray-100 px-2 py-1 rounded mt-1 inline-block" id="uploadFileName">form_study_data_*.zip</span>
+                                        </span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">4</span>
+                                        <span class="pt-1">Wait for <strong>"Upload complete"</strong> message</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <span class="flex-shrink-0 w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center font-bold">✓</span>
+                                        <span class="pt-1"><strong>Done!</strong> Click "I've Uploaded" below</span>
+                                    </li>
+                                </ol>
+                            </div>
+
+                            <div class="mt-6 p-4 bg-yellow-50 border-l-4 border-yellow-500 rounded">
+                                <p class="text-sm text-gray-700">
+                                    <strong>💡 Tip:</strong> You may need to sign in to Google Drive. Use any Google account.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="bg-white p-4 rounded-lg border-2 border-green-200 shadow-sm">
+                        <div class="flex items-center gap-3">
+                            <span class="text-3xl">✅</span>
+                            <div>
+                                <p class="font-bold text-gray-900">Direct Upload</p>
+                                <p class="text-xs text-gray-600">To researcher's Drive</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border-2 border-green-200 shadow-sm">
+                        <div class="flex items-center gap-3">
+                            <span class="text-3xl">🔒</span>
+                            <div>
+                                <p class="font-bold text-gray-900">Secure</p>
+                                <p class="text-xs text-gray-600">Google encryption</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border-2 border-green-200 shadow-sm">
+                        <div class="flex items-center gap-3">
+                            <span class="text-3xl">⚡</span>
+                            <div>
+                                <p class="font-bold text-gray-900">Fast</p>
+                                <p class="text-xs text-gray-600">Under 1 minute</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <button onclick="confirmUploaded()" 
+                            class="bg-green-600 text-white px-12 py-4 rounded-xl font-bold text-lg hover:bg-green-700 transition shadow-lg">
+                        ✅ I've Uploaded the File
                     </button>
+                </div>
 
-                    <!-- Instructions -->
-                    <div class="bg-blue-50 rounded-lg p-6">
-                        <p class="font-bold text-lg text-gray-900 mb-4">📝 Follow these steps:</p>
-                        <ol class="space-y-3 text-gray-700">
-                            <li class="flex items-start gap-3">
-                                <span class="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">1</span>
-                                <span class="pt-1">Click <strong>"Open Upload Folder"</strong> button above</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <span class="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">2</span>
-                                <span class="pt-1">In Google Drive, click <strong>"New"</strong> → <strong>"File upload"</strong></span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <span class="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">3</span>
-                                <span class="pt-1">Select ZIP file from Downloads:<br>
-                                <span class="font-mono text-sm bg-gray-100 px-2 py-1 rounded mt-1 inline-block" id="uploadFileName">form_study_data_*.zip</span>
-                                </span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <span class="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">4</span>
-                                <span class="pt-1">Wait for <strong>"Upload complete"</strong> message</span>
-                            </li>
-                            <li class="flex items-start gap-3">
-                                <span class="flex-shrink-0 w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center font-bold">✓</span>
-                                <span class="pt-1"><strong>Done!</strong> Click "I've Uploaded" below</span>
-                            </li>
-                        </ol>
-                    </div>
-
-                    <div class="mt-6 p-4 bg-yellow-50 border-l-4 border-yellow-500 rounded">
-                        <p class="text-sm text-gray-700">
-                            <strong>💡 Tip:</strong> You may need to sign in to Google Drive. Use any Google account.
-                        </p>
-                    </div>
+                <div class="mt-6 p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
+                    <p class="text-sm text-gray-700">
+                        <strong>⚠️ Important:</strong> Please complete upload within 24 hours.
+                    </p>
                 </div>
             </div>
         </div>
-
-        <!-- Info Boxes -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            <div class="bg-white p-4 rounded-lg border-2 border-green-200 shadow-sm">
-                <div class="flex items-center gap-3">
-                    <span class="text-3xl">✅</span>
-                    <div>
-                        <p class="font-bold text-gray-900">Direct Upload</p>
-                        <p class="text-xs text-gray-600">To researcher's Drive</p>
-                    </div>
-                </div>
-            </div>
-            <div class="bg-white p-4 rounded-lg border-2 border-green-200 shadow-sm">
-                <div class="flex items-center gap-3">
-                    <span class="text-3xl">🔒</span>
-                    <div>
-                        <p class="font-bold text-gray-900">Secure</p>
-                        <p class="text-xs text-gray-600">Google encryption</p>
-                    </div>
-                </div>
-            </div>
-            <div class="bg-white p-4 rounded-lg border-2 border-green-200 shadow-sm">
-                <div class="flex items-center gap-3">
-                    <span class="text-3xl">⚡</span>
-                    <div>
-                        <p class="font-bold text-gray-900">Fast</p>
-                        <p class="text-xs text-gray-600">Under 1 minute</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Confirmation Button -->
-        <div class="text-center">
-            <button onclick="confirmUploaded()" 
-                    class="bg-green-600 text-white px-12 py-4 rounded-xl font-bold text-lg hover:bg-green-700 transition shadow-lg">
-                ✅ I've Uploaded the File
-            </button>
-        </div>
-
-        <div class="mt-6 p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
-            <p class="text-sm text-gray-700">
-                <strong>⚠️ Important:</strong> Please complete upload within 24 hours.
-            </p>
-        </div>
-    </div>
-</div>
 
         <!-- Upload Success Section -->
         <div id="uploadSuccessSection" class="hidden bg-white rounded-xl shadow-2xl p-8">
@@ -197,24 +187,17 @@
                 <svg class="w-24 h-24 mx-auto text-green-600 mb-6 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
-                <h2 class="text-4xl font-bold text-green-900 mb-4">Data Sent Successfully! 🎉</h2>
-                <p class="text-xl text-green-800 mb-6">Your study data has been delivered to the researcher.</p>
-                <div class="bg-white rounded-xl p-6 mb-6 inline-block shadow-lg">
+                <h2 class="text-4xl font-bold text-green-900 mb-4">Upload Complete! 🎉</h2>
+                <p class="text-xl text-green-800 mb-6">Thank you for uploading your data!</p>
+                <div class="bg-white rounded-xl p-6 mb-6 shadow-lg">
                     <p class="text-gray-700 mb-4">
-                        <strong class="text-2xl">✅ You're All Done!</strong>
+                        <strong class="text-2xl">✅ All Done!</strong>
                     </p>
                     <p class="text-sm text-gray-600">
-                        ✉️ You'll receive a confirmation email shortly<br>
+                        ☁️ Your data has been uploaded to Google Drive<br>
                         🌐 You can now safely close this browser<br>
-                        🗑️ Feel free to clear your browsing data if desired
-                    </p>
-                </div>
-                <div class="mt-8 p-6 bg-blue-50 rounded-lg">
-                    <p class="text-lg font-semibold text-gray-800 mb-2">
-                        Thank You for Your Participation! 🙏
-                    </p>
-                    <p class="text-sm text-gray-600">
-                        Your contribution to this research study is greatly appreciated.
+                        🗑️ Feel free to clear your browsing data if desired<br>
+                        🙏 Thank you for participating in this research study!
                     </p>
                 </div>
             </div>
@@ -224,9 +207,10 @@
 
     <script>
         // ============================================
-        // CONFIGURATION - UPDATE THIS WITH YOUR EMAIL
+        // CONFIGURATION
         // ============================================
-        const RESEARCHER_EMAIL = 'dulanipiyumika1217@'; // ← CHANGE THIS TO YOUR EMAIL!
+        const GOOGLE_DRIVE_FOLDER_URL = 'https://drive.https://drive.google.com/drive/folders/1YrwxScyDKWk0gJItd_hjykW9sLc6sKE5?usp=drive_link.com/drive/folders/YOUR_FOLDER_ID_HERE';
+        // ← REPLACE with your Google Drive folder link!
 
         // ============================================
         // DATA SUMMARY
@@ -257,7 +241,6 @@
             document.getElementById('countAudio').textContent = audioCount;
         }
 
-        // Get participant ID
         function getParticipantId() {
             const studyData = JSON.parse(localStorage.getItem('formStudyData') || '{}');
             return studyData.participantId || 'Unknown';
@@ -287,11 +270,17 @@
             return csv.join('\n');
         }
 
-        function exportVariantData(variantLetter) {
+        // ============================================
+        // ENHANCED FIELD-LEVEL ANALYTICS
+        // ============================================
+        function exportDetailedVariantData(variantLetter) {
             const logs = JSON.parse(localStorage.getItem(`logs_${variantLetter}`) || '{}');
             const data = [];
             
             Object.entries(logs).forEach(([participantId, logData]) => {
+                const detailedLogs = logData.detailedLogs || [];
+                const fieldMetrics = calculateFieldMetrics(detailedLogs);
+                
                 data.push({
                     participant_id: participantId,
                     variant: variantLetter,
@@ -301,19 +290,107 @@
                     missing_required_errors: logData.errorCategories?.missing_required || 0,
                     invalid_format_errors: logData.errorCategories?.invalid_format || 0,
                     incomplete_data_errors: logData.errorCategories?.incomplete_data || 0,
+                    incomplete_field_count: fieldMetrics.incompleteCount,
                     total_events: logData.totalEvents,
                     first_interaction: logData.firstInteraction,
-                    form_submit_time: logData.formSubmitTime
+                    form_submit_time: logData.formSubmitTime,
+                    ...fieldMetrics.fields
                 });
             });
             
-            const headers = [
+            const baseHeaders = [
                 'participant_id', 'variant', 'timestamp', 'completion_time', 'total_errors',
                 'missing_required_errors', 'invalid_format_errors', 'incomplete_data_errors',
-                'total_events', 'first_interaction', 'form_submit_time'
+                'incomplete_field_count', 'total_events', 'first_interaction', 'form_submit_time'
             ];
             
-            return jsonToCSV(data, headers);
+            const fieldNames = [
+                'fullName', 'dateOfBirth', 'email', 'phone', 'streetAddress', 'city', 
+                'postcode', 'country', 'employmentStatus', 'employer', 'jobTitle', 
+                'yearsExperience', 'qualification', 'institution', 'yearCompletion', 
+                'desiredPosition', 'startDate', 'salaryExpectations', 'coverLetter', 'cv'
+            ];
+            
+            const fieldHeaders = [];
+            fieldNames.forEach(field => {
+                fieldHeaders.push(`${field}_char_count`);
+                fieldHeaders.push(`${field}_time_spent`);
+                fieldHeaders.push(`${field}_completed`);
+            });
+            
+            const allHeaders = [...baseHeaders, ...fieldHeaders];
+            return jsonToCSV(data, allHeaders);
+        }
+
+        function calculateFieldMetrics(detailedLogs) {
+            const fieldData = {};
+            const requiredFields = [
+                'fullName', 'dateOfBirth', 'email', 'phone', 'streetAddress', 'city', 
+                'postcode', 'country', 'employmentStatus', 'qualification', 'institution', 
+                'yearCompletion', 'desiredPosition', 'startDate', 'cv'
+            ];
+            
+            const allFields = [
+                'fullName', 'dateOfBirth', 'email', 'phone', 'streetAddress', 'city', 
+                'postcode', 'country', 'employmentStatus', 'employer', 'jobTitle', 
+                'yearsExperience', 'qualification', 'institution', 'yearCompletion', 
+                'desiredPosition', 'startDate', 'salaryExpectations', 'coverLetter', 'cv'
+            ];
+            
+            allFields.forEach(field => {
+                fieldData[field] = {
+                    charCount: 0,
+                    timeSpent: 0,
+                    completed: false,
+                    focusTime: null
+                };
+            });
+            
+            detailedLogs.forEach(log => {
+                const fieldName = log.fieldName;
+                if (!fieldName || !fieldData[fieldName]) return;
+                
+                if (log.event === 'fieldFocus') {
+                    fieldData[fieldName].focusTime = log.timestamp;
+                }
+                
+                if (log.event === 'fieldInput') {
+                    fieldData[fieldName].charCount = log.characterCount || 0;
+                    if (log.characterCount > 0) {
+                        fieldData[fieldName].completed = true;
+                    }
+                }
+                
+                if (log.event === 'fieldBlur') {
+                    if (fieldData[fieldName].focusTime) {
+                        const timeSpent = (log.timestamp - fieldData[fieldName].focusTime) / 1000;
+                        fieldData[fieldName].timeSpent += timeSpent;
+                    }
+                    if (log.characterCount > 0) {
+                        fieldData[fieldName].charCount = log.characterCount;
+                        fieldData[fieldName].completed = true;
+                    }
+                }
+            });
+            
+            let incompleteCount = 0;
+            requiredFields.forEach(field => {
+                if (!fieldData[field].completed) {
+                    incompleteCount++;
+                }
+            });
+            
+            const fields = {};
+            allFields.forEach(field => {
+                fields[`${field}_char_count`] = fieldData[field].charCount;
+                fields[`${field}_time_spent`] = fieldData[field].timeSpent.toFixed(2);
+                fields[`${field}_completed`] = fieldData[field].completed ? 'Yes' : 'No';
+            });
+            
+            return {
+                incompleteCount: incompleteCount,
+                fields: fields
+            };
         }
 
         function exportNASATLXData() {
@@ -379,24 +456,22 @@
             
             try {
                 const zip = new JSZip();
-                let progress = 0;
                 
                 function updateProgress(percent, message) {
-                    progress = percent;
                     progressBar.style.width = percent + '%';
                     progressText.textContent = message;
                 }
                 
                 updateProgress(10, 'Exporting Variant A data...');
-                const variantACSV = exportVariantData('A');
+                const variantACSV = exportDetailedVariantData('A');
                 if (variantACSV) zip.file('variant_a_data.csv', variantACSV);
                 
                 updateProgress(20, 'Exporting Variant B data...');
-                const variantBCSV = exportVariantData('B');
+                const variantBCSV = exportDetailedVariantData('B');
                 if (variantBCSV) zip.file('variant_b_data.csv', variantBCSV);
                 
                 updateProgress(30, 'Exporting Variant C data...');
-                const variantCCSV = exportVariantData('C');
+                const variantCCSV = exportDetailedVariantData('C');
                 if (variantCCSV) zip.file('variant_c_data.csv', variantCCSV);
                 
                 updateProgress(40, 'Exporting NASA-TLX data...');
@@ -441,14 +516,23 @@
 Export Date: ${new Date().toISOString()}
 Participant ID: ${getParticipantId()}
 
-Contents:
----------
-1. variant_a_data.csv
-2. variant_b_data.csv
-3. variant_c_data.csv
-4. nasa_tlx_data.csv
-5. interview_data.csv
-6. audio/ - Interview recordings
+Enhanced CSV Format:
+-------------------
+Each variant CSV now includes detailed field-level analytics:
+- Completion time and error counts
+- Incomplete field count
+- Per-field character counts
+- Per-field time spent (seconds)
+- Per-field completion status (Yes/No)
+
+Files:
+------
+1. variant_a_data.csv - Variant A with 60+ columns
+2. variant_b_data.csv - Variant B with 60+ columns
+3. variant_c_data.csv - Variant C with 60+ columns
+4. nasa_tlx_data.csv - NASA-TLX workload scores
+5. interview_data.csv - Interview metadata
+6. audio/ - Interview audio recordings
 
 For questions, contact the researcher.
 `;
@@ -468,12 +552,11 @@ For questions, contact the researcher.
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
                 
-                // Show upload section
                 setTimeout(() => {
                     document.getElementById('mainSection').classList.add('hidden');
                     document.getElementById('directUploadSection').classList.remove('hidden');
                     document.getElementById('fileName').textContent = fileName;
-                    document.getElementById('uploadFileName').value = fileName;
+                    document.getElementById('uploadFileName').textContent = fileName;
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 }, 1000);
                 
@@ -487,118 +570,31 @@ For questions, contact the researcher.
         }
 
         // ============================================
-        // UPLOAD FUNCTIONS
+        // GOOGLE DRIVE UPLOAD FUNCTIONS
         // ============================================
-        function updateFileName() {
-            const input = document.getElementById('fileInput');
-            const display = document.getElementById('fileNameDisplay');
-            if (input.files.length > 0) {
-                const fileName = input.files[0].name;
-                const fileSize = (input.files[0].size / (1024 * 1024)).toFixed(2);
-                display.innerHTML = `<strong class="text-green-700">✅ Selected:</strong> ${fileName} <span class="text-gray-600">(${fileSize} MB)</span>`;
-                display.classList.add('text-green-600', 'font-semibold');
-            }
-        }
-
-        function handleFormSubmit(event) {
-            const fileInput = document.getElementById('fileInput');
-            if (!fileInput.files.length) {
-                event.preventDefault();
-                alert('⚠️ Please select your ZIP file before sending.');
-                return false;
-            }
-            
-            const button = document.getElementById('uploadButton');
-            button.disabled = true;
-            button.innerHTML = '<span class="animate-pulse">📤 Sending data... Please wait (this may take 30-60 seconds)...</span>';
-            button.classList.add('opacity-75');
-            
-            return true;
-        }
-
-       // ============================================
-        // INITIALIZATION
-        // ============================================
-        document.addEventListener('DOMContentLoaded', function() {
-            updateDataSummary();
-            
-            // Configure FormSubmit
-            const form = document.getElementById('uploadForm');
-            if (form) {
-                form.action = `https://formsubmit.co/${RESEARCHER_EMAIL}`;
-                
-                document.getElementById('uploadParticipantId').value = getParticipantId();
-                document.getElementById('uploadDate').value = new Date().toLocaleDateString();
-                document.getElementById('uploadTime').value = new Date().toLocaleTimeString();
-                
-                const returnUrl = window.location.href.split('?')[0] + '?uploaded=true';
-                document.getElementById('returnUrl').value = returnUrl;
-            }
-            
-            // Check if returning from successful upload
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('uploaded') === 'true') {
-                document.getElementById('mainSection').style.display = 'none';
-                document.getElementById('directUploadSection').style.display = 'none';
-                document.getElementById('uploadSuccessSection').classList.remove('hidden');
-            }
-        });
-
-        // ============================================
-        // GOOGLE DRIVE UPLOAD FUNCTIONS - ADD THIS! 👇
-        // ============================================
-        
-        // ⚠️ REPLACE THIS WITH YOUR GOOGLE DRIVE FOLDER LINK!
-        const GOOGLE_DRIVE_FOLDER_URL = 'https://drive.google.com/drive/folders/1YrwxScyDKWk0gJItd_hjykW9sLc6sKE5?usp=sharing';
-   
-
         function openDriveUpload() {
-            // Open Google Drive folder in new tab
             window.open(GOOGLE_DRIVE_FOLDER_URL, '_blank');
-            
-            // Show reminder after 2 seconds
             setTimeout(() => {
                 const fileName = document.getElementById('fileName').textContent;
-                alert('📁 Google Drive Opened!\n\n' +
-                      'Remember to:\n' +
-                      '1. Click "New" → "File upload"\n' +
-                      '2. Select: ' + fileName + '\n' +
-                      '3. Wait for upload complete\n' +
-                      '4. Return here and click "I\'ve Uploaded"');
+                alert('📁 Google Drive Opened!\n\nRemember to:\n1. Click "New" → "File upload"\n2. Select: ' + fileName + '\n3. Wait for upload complete\n4. Return here and click "I\'ve Uploaded"');
             }, 2000);
         }
 
         function confirmUploaded() {
-            const confirmed = confirm(
-                '✅ Confirm Upload\n\n' +
-                'Have you successfully uploaded the ZIP file to Google Drive?\n\n' +
-                'Click OK if yes, Cancel if you still need to upload.'
-            );
-            
+            const confirmed = confirm('✅ Confirm Upload\n\nHave you successfully uploaded the ZIP file to Google Drive?\n\nClick OK if yes, Cancel if you still need to upload.');
             if (confirmed) {
-                // Hide upload section
                 document.getElementById('directUploadSection').style.display = 'none';
-                
-                // Show success confirmation
                 document.getElementById('uploadSuccessSection').classList.remove('hidden');
-                
-                // Scroll to top
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } else {
                 alert('📁 No problem!\n\nClick "Open Upload Folder" again to complete the upload.');
             }
         }
 
-        // Update file name display
-        function showDirectUpload() {
-            const fileName = document.getElementById('fileName').textContent;
-            document.getElementById('uploadFileName').textContent = fileName;
-        }
-        
         // ============================================
-        // END OF GOOGLE DRIVE FUNCTIONS 👆
+        // INITIALIZATION
         // ============================================
-
-    </script>   
+        document.addEventListener('DOMContentLoaded', updateDataSummary);
+    </script>
 </body>
 </html>
