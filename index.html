@@ -664,20 +664,25 @@
         ).textContent = `Step ${completedSteps} of ${totalSteps} completed`;
       }
 
-      // Check for existing session on page load
-      document.addEventListener("DOMContentLoaded", function () {
-        const studyData = JSON.parse(
-          localStorage.getItem("formStudyData") || "{}"
-        );
-
-        if (studyData.participantId) {
-          // Check and update completion status from localStorage
-          updateCompletionStatus(studyData);
-
-          // Resume existing session
-          initializeStudyProgress(studyData);
-        }
-      });
+      document.addEventListener('DOMContentLoaded', function() {
+    const studyData = JSON.parse(localStorage.getItem('formStudyData') || '{}');
+    
+    if (studyData.participantId) {
+        updateCompletionStatus(studyData);
+        initializeStudyProgress(studyData);
+    
+        setTimeout(function() {
+            const progressSection = document.getElementById('studyProgress');
+            if (progressSection && !progressSection.classList.contains('hidden')) {
+                progressSection.scrollIntoView({ 
+                    behavior: 'smooth', 
+                    block: 'start' 
+                });
+            }
+        }, 300);
+       
+    }
+});
 
       // Check completion status from various localStorage keys
       function updateCompletionStatus(studyData) {
