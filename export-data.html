@@ -73,116 +73,123 @@
         </div>
 
         <!-- Direct Upload Section (appears after download) -->
-        <div id="directUploadSection" class="hidden bg-white rounded-xl shadow-2xl p-8 mb-6">
-            <div class="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-500 rounded-xl p-6 shadow-lg">
-                <div class="flex items-center gap-3 mb-6">
-                    <svg class="w-16 h-16 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    <div>
-                        <h2 class="text-3xl font-bold text-gray-900">✅ Download Complete!</h2>
-                        <p class="text-lg text-gray-700">File saved: <span id="fileName" class="font-mono font-semibold text-green-700"></span></p>
+        <!-- REPLACE THE ENTIRE directUploadSection WITH THIS CODE -->
+
+<!-- Google Drive Upload Section (appears after download) -->
+<div id="directUploadSection" class="hidden bg-white rounded-xl shadow-2xl p-8 mb-6">
+    <div class="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-500 rounded-xl p-6 shadow-lg">
+        <div class="flex items-center gap-3 mb-6">
+            <svg class="w-16 h-16 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <div>
+                <h2 class="text-3xl font-bold text-gray-900">✅ Download Complete!</h2>
+                <p class="text-lg text-gray-700">File saved: <span id="fileName" class="font-mono font-semibold text-green-700"></span></p>
+            </div>
+        </div>
+
+        <div class="bg-blue-100 border-l-4 border-blue-600 p-6 mb-6 rounded-lg">
+            <h3 class="text-2xl font-bold text-gray-900 mb-4">📤 Step 2: Upload to Google Drive</h3>
+            <p class="text-gray-800 text-lg">Click the button below to upload your ZIP file to the research folder.</p>
+        </div>
+
+        <!-- Google Drive Upload -->
+        <div class="bg-white rounded-xl p-8 mb-6 border-2 border-blue-200 shadow-lg">
+            <div class="flex items-start gap-4 mb-6">
+                <div class="text-5xl">☁️</div>
+                <div class="flex-1">
+                    <h4 class="font-bold text-2xl text-gray-900 mb-4">Upload to Google Drive</h4>
+                    
+                    <!-- Big Upload Button -->
+                    <button onclick="openDriveUpload()" 
+                            class="w-full bg-blue-600 text-white px-8 py-6 rounded-xl font-bold text-2xl hover:bg-blue-700 transition shadow-lg hover:shadow-xl transform hover:scale-[1.02] mb-6">
+                        📁 Open Upload Folder
+                    </button>
+
+                    <!-- Instructions -->
+                    <div class="bg-blue-50 rounded-lg p-6">
+                        <p class="font-bold text-lg text-gray-900 mb-4">📝 Follow these steps:</p>
+                        <ol class="space-y-3 text-gray-700">
+                            <li class="flex items-start gap-3">
+                                <span class="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">1</span>
+                                <span class="pt-1">Click <strong>"Open Upload Folder"</strong> button above</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">2</span>
+                                <span class="pt-1">In Google Drive, click <strong>"New"</strong> → <strong>"File upload"</strong></span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">3</span>
+                                <span class="pt-1">Select ZIP file from Downloads:<br>
+                                <span class="font-mono text-sm bg-gray-100 px-2 py-1 rounded mt-1 inline-block" id="uploadFileName">form_study_data_*.zip</span>
+                                </span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="flex-shrink-0 w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">4</span>
+                                <span class="pt-1">Wait for <strong>"Upload complete"</strong> message</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <span class="flex-shrink-0 w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center font-bold">✓</span>
+                                <span class="pt-1"><strong>Done!</strong> Click "I've Uploaded" below</span>
+                            </li>
+                        </ol>
                     </div>
-                </div>
 
-                <div class="bg-blue-100 border-l-4 border-blue-600 p-4 mb-6 rounded">
-                    <p class="text-blue-900 font-semibold mb-2">📤 Step 2: Send Your Data to the Researcher</p>
-                    <p class="text-blue-800 text-sm">Upload the ZIP file you just downloaded - it will be sent directly to the researcher's email.</p>
-                </div>
-
-                <form id="uploadForm" action="https://formsubmit.co/researcher@university.edu" method="POST" enctype="multipart/form-data" onsubmit="return handleFormSubmit(event)">
-                    <!-- FormSubmit Configuration (Hidden Fields) -->
-                    <input type="hidden" name="_subject" value="Form Study Data - New Participant Submission">
-                    <input type="hidden" name="_captcha" value="false">
-                    <input type="hidden" name="_template" value="table">
-                    <input type="hidden" name="_next" id="returnUrl" value="">
-                    <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
-                    
-                    <!-- Participant Information -->
-                    <input type="hidden" name="Participant_ID" id="uploadParticipantId">
-                    <input type="hidden" name="Submission_Date" id="uploadDate">
-                    <input type="hidden" name="Submission_Time" id="uploadTime">
-                    <input type="hidden" name="File_Name" id="uploadFileName">
-                    
-                    <!-- File Upload Field -->
-                    <div class="mb-6 bg-white rounded-lg p-6 border-2 border-dashed border-green-300 hover:border-green-500 transition">
-                        <label class="block text-gray-900 font-bold text-xl mb-3">
-                            📁 Select Your Downloaded ZIP File:
-                        </label>
-                        <input type="file" 
-                               name="attachment" 
-                               id="fileInput"
-                               accept=".zip"
-                               required
-                               onchange="updateFileName()"
-                               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-green-600 focus:outline-none cursor-pointer text-lg file:mr-4 file:py-3 file:px-6 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100 file:cursor-pointer">
-                        <p class="text-sm text-gray-500 mt-3" id="fileNameDisplay">
-                            📂 Please select the ZIP file from your Downloads folder
+                    <div class="mt-6 p-4 bg-yellow-50 border-l-4 border-yellow-500 rounded">
+                        <p class="text-sm text-gray-700">
+                            <strong>💡 Tip:</strong> You may need to sign in to Google Drive. Use any Google account.
                         </p>
                     </div>
-
-                    <!-- Optional Message -->
-                    <div class="mb-6 bg-white rounded-lg p-4 border border-gray-200">
-                        <label class="block text-gray-700 font-semibold mb-2 flex items-center gap-2">
-                            <span class="text-xl">📝</span>
-                            <span>Optional Message to Researcher:</span>
-                        </label>
-                        <textarea name="Message" 
-                                  rows="3" 
-                                  placeholder="Any comments, issues, or feedback? (optional)"
-                                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-green-500 focus:outline-none text-sm"></textarea>
-                    </div>
-                    
-                    <!-- Submit Button -->
-                    <button type="submit" 
-                            id="uploadButton"
-                            class="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white px-8 py-5 rounded-xl font-bold text-xl hover:from-green-700 hover:to-emerald-700 transition shadow-lg hover:shadow-xl transform hover:scale-[1.02]">
-                        ✉️ Send Data to Researcher
-                    </button>
-                </form>
-                
-                <!-- Info Boxes -->
-                <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-3">
-                    <div class="bg-white p-4 rounded-lg border-2 border-green-200">
-                        <div class="flex items-center gap-3">
-                            <span class="text-3xl">✅</span>
-                            <div>
-                                <p class="font-bold text-gray-900">Direct Delivery</p>
-                                <p class="text-xs text-gray-600">Sent to researcher instantly</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-white p-4 rounded-lg border-2 border-green-200">
-                        <div class="flex items-center gap-3">
-                            <span class="text-3xl">🔒</span>
-                            <div>
-                                <p class="font-bold text-gray-900">Secure & Private</p>
-                                <p class="text-xs text-gray-600">Your data is protected</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bg-white p-4 rounded-lg border-2 border-green-200">
-                        <div class="flex items-center gap-3">
-                            <span class="text-3xl">⚡</span>
-                            <div>
-                                <p class="font-bold text-gray-900">Fast Upload</p>
-                                <p class="text-xs text-gray-600">Takes ~30 seconds</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="mt-6 p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
-                    <p class="text-sm text-gray-700">
-                        <strong>💡 What happens after you click "Send":</strong><br>
-                        1️⃣ Your ZIP file is uploaded securely<br>
-                        2️⃣ It's sent directly to the researcher's email<br>
-                        3️⃣ You'll receive a confirmation email<br>
-                        4️⃣ You're all done! Thank you for participating! 🎉
-                    </p>
                 </div>
             </div>
         </div>
+
+        <!-- Info Boxes -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div class="bg-white p-4 rounded-lg border-2 border-green-200 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <span class="text-3xl">✅</span>
+                    <div>
+                        <p class="font-bold text-gray-900">Direct Upload</p>
+                        <p class="text-xs text-gray-600">To researcher's Drive</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white p-4 rounded-lg border-2 border-green-200 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <span class="text-3xl">🔒</span>
+                    <div>
+                        <p class="font-bold text-gray-900">Secure</p>
+                        <p class="text-xs text-gray-600">Google encryption</p>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white p-4 rounded-lg border-2 border-green-200 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <span class="text-3xl">⚡</span>
+                    <div>
+                        <p class="font-bold text-gray-900">Fast</p>
+                        <p class="text-xs text-gray-600">Under 1 minute</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Confirmation Button -->
+        <div class="text-center">
+            <button onclick="confirmUploaded()" 
+                    class="bg-green-600 text-white px-12 py-4 rounded-xl font-bold text-lg hover:bg-green-700 transition shadow-lg">
+                ✅ I've Uploaded the File
+            </button>
+        </div>
+
+        <div class="mt-6 p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
+            <p class="text-sm text-gray-700">
+                <strong>⚠️ Important:</strong> Please complete upload within 24 hours.
+            </p>
+        </div>
+    </div>
+</div>
 
         <!-- Upload Success Section -->
         <div id="uploadSuccessSection" class="hidden bg-white rounded-xl shadow-2xl p-8">
@@ -219,7 +226,7 @@
         // ============================================
         // CONFIGURATION - UPDATE THIS WITH YOUR EMAIL
         // ============================================
-        const RESEARCHER_EMAIL = 'dulanipiyumika1217@gmail.com'; // ← CHANGE THIS TO YOUR EMAIL!
+        const RESEARCHER_EMAIL = 'dulanipiyumika1217@'; // ← CHANGE THIS TO YOUR EMAIL!
 
         // ============================================
         // DATA SUMMARY
@@ -509,7 +516,7 @@ For questions, contact the researcher.
             return true;
         }
 
-        // ============================================
+       // ============================================
         // INITIALIZATION
         // ============================================
         document.addEventListener('DOMContentLoaded', function() {
@@ -536,6 +543,62 @@ For questions, contact the researcher.
                 document.getElementById('uploadSuccessSection').classList.remove('hidden');
             }
         });
-    </script>
+
+        // ============================================
+        // GOOGLE DRIVE UPLOAD FUNCTIONS - ADD THIS! 👇
+        // ============================================
+        
+        // ⚠️ REPLACE THIS WITH YOUR GOOGLE DRIVE FOLDER LINK!
+        const GOOGLE_DRIVE_FOLDER_URL = 'https://drive.google.com/drive/folders/1YrwxScyDKWk0gJItd_hjykW9sLc6sKE5?usp=sharing';
+   
+
+        function openDriveUpload() {
+            // Open Google Drive folder in new tab
+            window.open(GOOGLE_DRIVE_FOLDER_URL, '_blank');
+            
+            // Show reminder after 2 seconds
+            setTimeout(() => {
+                const fileName = document.getElementById('fileName').textContent;
+                alert('📁 Google Drive Opened!\n\n' +
+                      'Remember to:\n' +
+                      '1. Click "New" → "File upload"\n' +
+                      '2. Select: ' + fileName + '\n' +
+                      '3. Wait for upload complete\n' +
+                      '4. Return here and click "I\'ve Uploaded"');
+            }, 2000);
+        }
+
+        function confirmUploaded() {
+            const confirmed = confirm(
+                '✅ Confirm Upload\n\n' +
+                'Have you successfully uploaded the ZIP file to Google Drive?\n\n' +
+                'Click OK if yes, Cancel if you still need to upload.'
+            );
+            
+            if (confirmed) {
+                // Hide upload section
+                document.getElementById('directUploadSection').style.display = 'none';
+                
+                // Show success confirmation
+                document.getElementById('uploadSuccessSection').classList.remove('hidden');
+                
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                alert('📁 No problem!\n\nClick "Open Upload Folder" again to complete the upload.');
+            }
+        }
+
+        // Update file name display
+        function showDirectUpload() {
+            const fileName = document.getElementById('fileName').textContent;
+            document.getElementById('uploadFileName').textContent = fileName;
+        }
+        
+        // ============================================
+        // END OF GOOGLE DRIVE FUNCTIONS 👆
+        // ============================================
+
+    </script>   
 </body>
 </html>
