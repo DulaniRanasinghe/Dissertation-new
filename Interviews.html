@@ -130,9 +130,10 @@
                     };
 
                     this.mediaRecorder.onstop = () => {
-                        this.audioBlob = new Blob(this.audioChunks, { type: 'audio/wav' });
-                        this.updateUI();
-                    };
+                    this.audioBlob = new Blob(this.audioChunks, { type: 'audio/wav' });
+                    recordings[this.questionId] = this.audioBlob;  // ✅ Save here!
+                    this.updateUI();
+};
 
                     this.mediaRecorder.start();
                     return true;
@@ -208,29 +209,35 @@
                 recorders[q.id] = new AudioRecorder(q.id);
             });
         }
-
         async function toggleRecording(questionId) {
-            const recorder = recorders[questionId];
-            const btn = document.getElementById(`record-${questionId}`);
-            const text = document.getElementById(`record-text-${questionId}`);
-            const status = document.getElementById(`status-${questionId}`);
+    const recorder = recorders[questionId];
+    const btn = document.getElementById(`record-${questionId}`);
+    const text = document.getElementById(`record-text-${questionId}`);
+    const status = document.getElementById(`status-${questionId}`);
 
-            if (!recorder.mediaRecorder || recorder.mediaRecorder.state === 'inactive') {
-                const success = await recorder.start();
-                if (success) {
-                    btn.classList.add('recording');
-                    text.textContent = 'Stop Recording';
-                    status.textContent = 'Recording...';
-                    status.classList.remove('text-green-600');
-                    status.classList.add('text-red-600');
-                }
-            } else {
-                recorder.stop();
-                btn.classList.remove('recording');
-                text.textContent = 'Re-record';
-                recordings[questionId] = recorder.getAudioBlob();
-            }
+    if (!recorder.mediaRecorder || recorder.mediaRecorder.state === 'inactive') {
+        const success = await recorder.start();
+        if (success) {
+            btn.classList.add('recording');
+            text.textContent = 'Stop Recording';
+            status.textContent = 'Recording...';
+            status.classList.remove('text-green-600');
+            status.classList.add('text-red-600');
         }
+    } else {
+        // ✅ FIX: Wait for recording to finish before saving
+        await new Promise((resolve) => {
+            recorder.mediaRecorder.addEventListener('stop', () => {
+                recordings[questionId] = recorder.getAudioBlob();
+                resolve();
+            }, { once: true });
+            recorder.stop();
+        });
+        
+        btn.classList.remove('recording');
+        text.textContent = 'Re-record';
+    }
+}
 
         function playRecording(questionId) {
             const blob = recordings[questionId];
