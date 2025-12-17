@@ -1,750 +1,1164 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Variant B - Multi-Step Form</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react@18/umd/react.production.min.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"
+    ></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     <style>
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
+      @keyframes fadeInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
         }
-        .animate-fade-in-down { animation: fadeInDown 0.5s ease-out forwards; }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .animate-fade-in-down {
+        animation: fadeInDown 0.5s ease-out forwards;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div id="root"></div>
     <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
+      const { useState, useEffect, useRef } = React;
 
-        const Download = ({ size = 24 }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                <polyline points="7 10 12 15 17 10"></polyline>
-                <line x1="12" y1="15" x2="12" y2="3"></line>
-            </svg>
-        );
+      const Download = ({ size = 24 }) => (
+        <svg
+          width={size}
+          height={size}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+      );
 
-        const Check = ({ size = 16 }) => (
-            <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
-                <polyline points="20 6 9 17 4 12"></polyline>
-            </svg>
-        );
+      const Check = ({ size = 16 }) => (
+        <svg
+          width={size}
+          height={size}
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="3"
+        >
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+      );
 
-        const ALL_FIELDS = [
-            { name: 'fullName', label: 'Full Name', required: true, type: 'text', group: 'Personal Information', step: 1 },
-            { name: 'dateOfBirth', label: 'Date of Birth', required: true, type: 'date-composite', group: 'Personal Information', step: 1 },
-            { name: 'email', label: 'Email', required: true, type: 'email', group: 'Personal Information', step: 1 },
-            { name: 'phone', label: 'Phone Number', required: true, type: 'tel', group: 'Personal Information', step: 1 },
-            { name: 'streetAddress', label: 'Street Address', required: true, type: 'text', group: 'Address Information', colSpan: 2, step: 2 },
-            { name: 'city', label: 'City', required: true, type: 'text', group: 'Address Information', step: 2 },
-            { name: 'postcode', label: 'Postcode', required: true, type: 'text', group: 'Address Information', step: 2 },
-            { name: 'country', label: 'Country', required: true, type: 'text', group: 'Address Information', colSpan: 2, step: 2 },
-            { name: 'employmentStatus', label: 'Employment Status', required: true, type: 'select', group: 'Employment History', step: 3 },
-            { name: 'employer', label: 'Current/Most Recent Employer', required: false, type: 'text', group: 'Employment History', step: 3 },
-            { name: 'jobTitle', label: 'Job Title', required: false, type: 'text', group: 'Employment History', step: 3 },
-            { name: 'yearsExperience', label: 'Years of Experience', required: false, type: 'number-select', group: 'Employment History', step: 3 },
-            { name: 'qualification', label: 'Highest Qualification', required: true, type: 'text', group: 'Education', step: 4 },
-            { name: 'institution', label: 'Institution', required: true, type: 'text', group: 'Education', step: 4 },
-            { name: 'yearCompletion', label: 'Year of Completion', required: true, type: 'year-select', group: 'Education', step: 4, futureYears: 5 },
-            { name: 'desiredPosition', label: 'Desired Position', required: true, type: 'select', group: 'Job Preferences', step: 5 },
-            { name: 'startDate', label: 'Earliest Start Date', required: true, type: 'date', group: 'Job Preferences', step: 5 },
-            { name: 'salaryExpectations', label: 'Salary Expectations', required: false, type: 'text', group: 'Job Preferences', step: 5 },
-            { name: 'coverLetter', label: 'Cover Letter', required: false, type: 'textarea', group: 'Job Preferences', colSpan: 2, step: 5 },
-            { name: 'cv', label: 'Upload CV/Resume', required: true, type: 'file', group: 'Job Preferences', colSpan: 2, step: 5 }
-        ];
+      const ALL_FIELDS = [
+        {
+          name: "fullName",
+          label: "Full Name",
+          required: true,
+          type: "text",
+          group: "Personal Information",
+          step: 1,
+        },
+        {
+          name: "dateOfBirth",
+          label: "Date of Birth",
+          required: true,
+          type: "date-composite",
+          group: "Personal Information",
+          step: 1,
+        },
+        {
+          name: "email",
+          label: "Email",
+          required: true,
+          type: "email",
+          group: "Personal Information",
+          step: 1,
+        },
+        {
+          name: "phone",
+          label: "Phone Number",
+          required: true,
+          type: "tel",
+          group: "Personal Information",
+          step: 1,
+        },
+        {
+          name: "streetAddress",
+          label: "Street Address",
+          required: true,
+          type: "text",
+          group: "Address Information",
+          colSpan: 2,
+          step: 2,
+        },
+        {
+          name: "city",
+          label: "City",
+          required: true,
+          type: "text",
+          group: "Address Information",
+          step: 2,
+        },
+        {
+          name: "postcode",
+          label: "Postcode",
+          required: true,
+          type: "text",
+          group: "Address Information",
+          step: 2,
+        },
+        {
+          name: "country",
+          label: "Country",
+          required: true,
+          type: "text",
+          group: "Address Information",
+          colSpan: 2,
+          step: 2,
+        },
+        {
+          name: "employmentStatus",
+          label: "Employment Status",
+          required: true,
+          type: "select",
+          group: "Employment History",
+          step: 3,
+        },
+        {
+          name: "employer",
+          label: "Current/Most Recent Employer",
+          required: false,
+          type: "text",
+          group: "Employment History",
+          step: 3,
+        },
+        {
+          name: "jobTitle",
+          label: "Job Title",
+          required: false,
+          type: "text",
+          group: "Employment History",
+          step: 3,
+        },
+        {
+          name: "yearsExperience",
+          label: "Years of Experience",
+          required: false,
+          type: "number-select",
+          group: "Employment History",
+          step: 3,
+        },
+        {
+          name: "qualification",
+          label: "Highest Qualification",
+          required: true,
+          type: "text",
+          group: "Education",
+          step: 4,
+        },
+        {
+          name: "institution",
+          label: "Institution",
+          required: true,
+          type: "text",
+          group: "Education",
+          step: 4,
+        },
+        {
+          name: "yearCompletion",
+          label: "Year of Completion",
+          required: true,
+          type: "year-select",
+          group: "Education",
+          step: 4,
+          futureYears: 5,
+        },
+        {
+          name: "desiredPosition",
+          label: "Desired Position",
+          required: true,
+          type: "select",
+          group: "Job Preferences",
+          step: 5,
+        },
+        {
+          name: "startDate",
+          label: "Earliest Start Date",
+          required: true,
+          type: "date",
+          group: "Job Preferences",
+          step: 5,
+        },
+        {
+          name: "salaryExpectations",
+          label: "Salary Expectations",
+          required: false,
+          type: "text",
+          group: "Job Preferences",
+          step: 5,
+        },
+        {
+          name: "coverLetter",
+          label: "Cover Letter",
+          required: false,
+          type: "textarea",
+          group: "Job Preferences",
+          colSpan: 2,
+          step: 5,
+        },
+        {
+          name: "cv",
+          label: "Upload CV/Resume",
+          required: true,
+          type: "file",
+          group: "Job Preferences",
+          colSpan: 2,
+          step: 5,
+        },
+      ];
 
-        const TOTAL_STEPS = 5;
+      const TOTAL_STEPS = 5;
 
-        async function sendToGoogleSheets(dataType, data) {
-            try {
-                const response = await fetch(GOOGLE_SCRIPT_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ type: dataType, ...data })
-                });
-                const result = await response.json();
-                console.log('✅ Data sent:', result);
-                return true;
-            } catch (error) {
-                console.error('❌ Error sending data:', error);
-                return false;
-            }
+      async function sendToGoogleSheets(dataType, data) {
+        try {
+          const response = await fetch(GOOGLE_SCRIPT_URL, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ type: dataType, ...data }),
+          });
+          const result = await response.json();
+          console.log("✅ Data sent:", result);
+          return true;
+        } catch (error) {
+          console.error("❌ Error sending data:", error);
+          return false;
         }
+      }
 
-        function MultiStepForm() {
-            const [step, setStep] = useState(1);
-            const [formData, setFormData] = useState({
-                fullName: '', dateOfBirth: '', dobYear: '', dobMonth: '', dobDay: '', email: '', phone: '',
-                streetAddress: '', city: '', postcode: '', country: '', employer: '', jobTitle: '',
-                yearsExperience: '', employmentStatus: '', qualification: '', institution: '',
-                yearCompletion: '', desiredPosition: '', startDate: '', salaryExpectations: '', coverLetter: '', cv: null
+      function MultiStepForm() {
+        const [step, setStep] = useState(1);
+        const [formData, setFormData] = useState({
+          fullName: "",
+          dateOfBirth: "",
+          dobYear: "",
+          dobMonth: "",
+          dobDay: "",
+          email: "",
+          phone: "",
+          streetAddress: "",
+          city: "",
+          postcode: "",
+          country: "",
+          employer: "",
+          jobTitle: "",
+          yearsExperience: "",
+          employmentStatus: "",
+          qualification: "",
+          institution: "",
+          yearCompletion: "",
+          desiredPosition: "",
+          startDate: "",
+          salaryExpectations: "",
+          coverLetter: "",
+          cv: null,
+        });
+
+        const [errors, setErrors] = useState({});
+        const [logs, setLogs] = useState([]);
+        const [firstInteraction, setFirstInteraction] = useState(null);
+        const [fieldTimers, setFieldTimers] = useState({});
+        const [fieldStartTime, setFieldStartTime] = useState({});
+        const [errorCategories, setErrorCategories] = useState({
+          missing_required: 0,
+          invalid_format: 0,
+          incomplete_data: 0,
+        });
+
+        const getParticipantId = () => {
+          const storedData = JSON.parse(
+            localStorage.getItem("formStudyData") || "{}"
+          );
+          if (storedData.participantId) return storedData.participantId;
+          let maxNumber = 0;
+          ["logs_A", "logs_B", "logs_C"].forEach((key) => {
+            const logs = JSON.parse(localStorage.getItem(key) || "{}");
+            Object.keys(logs).forEach((pid) => {
+              const match = pid.match(/^P(\d+)$/);
+              if (match && parseInt(match[1]) > maxNumber)
+                maxNumber = parseInt(match[1]);
             });
+          });
+          const newId = `P${maxNumber + 1}`;
+          localStorage.setItem(
+            "formStudyData",
+            JSON.stringify({ ...storedData, participantId: newId })
+          );
+          return newId;
+        };
 
-            const [errors, setErrors] = useState({});
-            const [logs, setLogs] = useState([]);
-            const [firstInteraction, setFirstInteraction] = useState(null);
-            const [fieldTimers, setFieldTimers] = useState({});
-            const [fieldStartTime, setFieldStartTime] = useState({});
-            const [errorCategories, setErrorCategories] = useState({
-                'missing_required': 0,
-                'invalid_format': 0,
-                'incomplete_data': 0
-            });
+        const participantId = useRef(getParticipantId());
+        const errorModalRef = useRef(null);
 
-            const getParticipantId = () => {
-                const storedData = JSON.parse(localStorage.getItem('formStudyData') || '{}');
-                if (storedData.participantId) return storedData.participantId;
-                let maxNumber = 0;
-                ['logs_A', 'logs_B', 'logs_C'].forEach(key => {
-                    const logs = JSON.parse(localStorage.getItem(key) || '{}');
-                    Object.keys(logs).forEach(pid => {
-                        const match = pid.match(/^P(\d+)$/);
-                        if (match && parseInt(match[1]) > maxNumber) maxNumber = parseInt(match[1]);
-                    });
-                });
-                const newId = `P${maxNumber + 1}`;
-                localStorage.setItem('formStudyData', JSON.stringify({ ...storedData, participantId: newId }));
-                return newId;
-            };
+        useEffect(() => {
+          addLog("formLoad", { timestamp: performance.now() });
+        }, []);
 
-            const participantId = useRef(getParticipantId());
-            const errorModalRef = useRef(null);
+        useEffect(() => {
+          addLog("stepViewed", { step, stepName: getStepName(step) });
+        }, [step]);
 
-            useEffect(() => {
-                addLog('formLoad', { timestamp: performance.now() });
-            }, []);
-            
-            useEffect(() => {
-                addLog('stepViewed', { step, stepName: getStepName(step) });
-            }, [step]);
+        const getStepName = (stepNumber) => {
+          switch (stepNumber) {
+            case 1:
+              return "Personal Information";
+            case 2:
+              return "Address Information";
+            case 3:
+              return "Employment History";
+            case 4:
+              return "Education";
+            case 5:
+              return "Job Preferences";
+            default:
+              return `Step ${stepNumber}`;
+          }
+        };
 
-            const getStepName = (stepNumber) => {
-                switch(stepNumber) {
-                    case 1: return "Personal Information";
-                    case 2: return "Address Information";
-                    case 3: return "Employment History";
-                    case 4: return "Education";
-                    case 5: return "Job Preferences";
-                    default: return `Step ${stepNumber}`;
-                }
-            }
+        const addLog = (eventType, data = {}) => {
+          setLogs((prev) => [
+            ...prev,
+            {
+              participantID: participantId.current,
+              variant: "B",
+              timestamp: performance.now(),
+              event: eventType,
+              step: step,
+              ...data,
+            },
+          ]);
+        };
 
-            const addLog = (eventType, data = {}) => {
-                setLogs(prev => [...prev, {
-                    participantID: participantId.current,
-                    variant: 'B',
-                    timestamp: performance.now(),
-                    event: eventType,
-                    step: step, 
-                    ...data
-                }]);
-            };
+        const validateField = (name, value, required) => {
+          let error = "";
+          let errorType = "";
 
-            useEffect(() => {
-                if (logs.length > 0) {
-                    const logKey = 'logs_B';
-                    const allLogs = JSON.parse(localStorage.getItem(logKey) || '{}');
-                    allLogs[participantId.current] = logs;
-                    localStorage.setItem(logKey, JSON.stringify(allLogs));
-                }
-            }, [logs]);
-
-            const validateField = (name, value, required) => {
-                let error = '';
-                let errorType = '';
-                
-                if (required) {
-                    if (name === 'cv') {
-                        if (!formData.cv) {
-                            error = 'CV/Resume is required';
-                            errorType = 'missing_required';
-                            return { error, errorType };
-                        }
-                    } else if (!value || (typeof value === 'string' && !value.trim())) {
-                        error = `${ALL_FIELDS.find(f => f.name === name)?.label || name} is required`;
-                        errorType = 'missing_required';
-                        return { error, errorType };
-                    }
-                }
-
-                if (!value) return { error: '', errorType: '' };
-
-                switch(name) {
-                    case 'email': 
-                        if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
-                            error = 'Invalid email format';
-                            errorType = 'invalid_format';
-                        }
-                        break;
-                    case 'yearCompletion': 
-                        const currentYear = new Date().getFullYear();
-                        const maxAllowedYear = currentYear + 10;
-                        if (value && (isNaN(parseInt(value)) || parseInt(value) < 1900 || parseInt(value) > maxAllowedYear)) {
-                            error = 'Invalid year';
-                            errorType = 'invalid_format';
-                        }
-                        break;
-                }
+          if (required) {
+            if (name === "cv") {
+              if (!formData.cv) {
+                error = "CV/Resume is required";
+                errorType = "missing_required";
                 return { error, errorType };
-            };
+              }
+            } else if (!value || (typeof value === "string" && !value.trim())) {
+              error = `${
+                ALL_FIELDS.find((f) => f.name === name)?.label || name
+              } is required`;
+              errorType = "missing_required";
+              return { error, errorType };
+            }
+          }
 
-            const validateStep = (currentStep) => {
-                const fieldsInStep = ALL_FIELDS.filter(f => f.step === currentStep);
-                const newErrors = {};
-                let errorCounts = {
-                    'missing_required': 0,
-                    'invalid_format': 0,
-                    'incomplete_data': 0
-                };
-                
-                fieldsInStep.forEach(field => {
-                    const value = formData[field.name];
-                    
-                    if (field.name === 'dateOfBirth' && field.required) {
-                        const year = formData.dobYear;
-                        const month = formData.dobMonth;
-                        const day = formData.dobDay;
-                        
-                        if (!year || !month || !day) {
-                            newErrors['dateOfBirth'] = 'Please complete your full date of birth.';
-                            errorCounts['incomplete_data']++;
-                            addLog('validationError', { 
-                                fieldName: 'dateOfBirth', 
-                                errorType: 'incomplete_data', 
-                                errorMessage: 'Incomplete Date of Birth',
-                                fieldValue: `${year || ''}-${month || ''}-${day || ''}`,
-                                characterCount: `year:${(year || '').length}, month:${(month || '').length}, day:${(day || '').length}`
-                            });
-                            return;
-                        }
-                    }
+          if (!value) return { error: "", errorType: "" };
 
-                    const { error, errorType } = validateField(field.name, value, field.required);
-                    if (error) {
-                        newErrors[field.name] = error;
-                        if (errorType) errorCounts[errorType]++;
-                        addLog('validationError', { 
-                            fieldName: field.name, 
-                            errorType: errorType, 
-                            errorMessage: error,
-                            fieldValue: field.type === 'file' ? (formData[field.name]?.name || '') : (value || ''),
-                            characterCount: field.type === 'file' ? (formData[field.name]?.name?.length || 0) : ((value || '').length || 0)
-                        });
-                    }
+          switch (name) {
+            case "email":
+              if (value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+                error = "Invalid email format";
+                errorType = "invalid_format";
+              }
+              break;
+            case "yearCompletion":
+              const currentYear = new Date().getFullYear();
+              const maxAllowedYear = currentYear + 10;
+              if (
+                value &&
+                (isNaN(parseInt(value)) ||
+                  parseInt(value) < 1900 ||
+                  parseInt(value) > maxAllowedYear)
+              ) {
+                error = "Invalid year";
+                errorType = "invalid_format";
+              }
+              break;
+          }
+          return { error, errorType };
+        };
+
+        const validateStep = (currentStep) => {
+          const fieldsInStep = ALL_FIELDS.filter((f) => f.step === currentStep);
+          const newErrors = {};
+          let errorCounts = {
+            missing_required: 0,
+            invalid_format: 0,
+            incomplete_data: 0,
+          };
+
+          fieldsInStep.forEach((field) => {
+            const value = formData[field.name];
+
+            if (field.name === "dateOfBirth" && field.required) {
+              const year = formData.dobYear;
+              const month = formData.dobMonth;
+              const day = formData.dobDay;
+
+              if (!year || !month || !day) {
+                newErrors["dateOfBirth"] =
+                  "Please complete your full date of birth.";
+                errorCounts["incomplete_data"]++;
+                addLog("validationError", {
+                  fieldName: "dateOfBirth",
+                  errorType: "incomplete_data",
+                  errorMessage: "Incomplete Date of Birth",
+                  fieldValue: `${year || ""}-${month || ""}-${day || ""}`,
+                  characterCount: `year:${(year || "").length}, month:${
+                    (month || "").length
+                  }, day:${(day || "").length}`,
                 });
+                return;
+              }
+            }
 
-                setErrors(prevErrors => {
-                    const stepFields = fieldsInStep.map(f => f.name);
-                    const filteredErrors = Object.keys(prevErrors).filter(name => !stepFields.includes(name)).reduce((acc, name) => {
-                        acc[name] = prevErrors[name];
-                        return acc;
-                    }, {});
-                    return { ...filteredErrors, ...newErrors };
-                });
-
-                setErrorCategories(prev => ({
-                    'missing_required': prev.missing_required + errorCounts.missing_required,
-                    'invalid_format': prev.invalid_format + errorCounts.invalid_format,
-                    'incomplete_data': prev.incomplete_data + errorCounts.incomplete_data
-                }));
-
-                return Object.keys(newErrors).length === 0;
-            };
-
-            const handleFocus = (fieldName) => {
-                if (!firstInteraction) {
-                    setFirstInteraction(performance.now());
-                    addLog('firstInteraction', { fieldName });
-                }
-                const focusTime = performance.now();
-                setFieldStartTime(prev => ({ ...prev, [fieldName]: focusTime }));
-                addLog('fieldFocus', { 
-                    fieldName,
-                    currentValue: formData[fieldName] || '',
-                    characterCount: (formData[fieldName] || '').length
-                });
-            };
-
-            const handleBlur = (fieldName, value) => {
-                const blurTime = performance.now();
-                const startTime = fieldStartTime[fieldName];
-                const timeSpent = startTime ? ((blurTime - startTime) / 1000).toFixed(2) : 0;
-                
-                setFieldTimers(prev => ({
-                    ...prev,
-                    [fieldName]: (prev[fieldName] || 0) + parseFloat(timeSpent)
-                }));
-
-                addLog('fieldBlur', { 
-                    fieldName,
-                    timeSpentSeconds: parseFloat(timeSpent),
-                    finalValue: value || '',
-                    characterCount: (value || '').length
-                });
-
-                const field = ALL_FIELDS.find(f => f.name === fieldName);
-                if (field && field.type !== 'date-composite' && field.type !== 'file') {
-                    const { error, errorType } = validateField(fieldName, value, field.required);
-                    setErrors(prev => {
-                        const newErrors = { ...prev };
-                        if (error) {
-                            newErrors[fieldName] = error;
-                            if (errorType) {
-                                setErrorCategories(prevCat => ({
-                                    ...prevCat,
-                                    [errorType]: prevCat[errorType] + 1
-                                }));
-                            }
-                            addLog('validationError', { 
-                                fieldName, 
-                                errorType: errorType, 
-                                errorMessage: error,
-                                fieldValue: value || '',
-                                characterCount: (value || '').length
-                            });
-                        } else {
-                            delete newErrors[fieldName];
-                        }
-                        return newErrors;
-                    });
-                }
-            };
-
-            const handleChange = (e) => {
-                const { name, value, type, files } = e.target;
-                
-                if (type === 'file') {
-                    const file = files[0];
-                    setFormData(prev => ({ ...prev, [name]: file }));
-                    if (file) {
-                        setErrors(prev => {
-                            const newErrors = { ...prev };
-                            delete newErrors[name];
-                            return newErrors;
-                        });
-                    }
-                    addLog('fieldInput', { 
-                        fieldName: name,
-                        newValue: file ? file.name : '',
-                        characterCount: file ? file.name.length : 0,
-                        fileSize: file ? file.size : 0,
-                        fileType: file ? file.type : ''
-                    });
-                    return;
-                }
-
-                setFormData(prev => {
-                    const newState = { ...prev, [name]: value };
-                    
-                    if (name.startsWith('dob')) {
-                        const year = newState.dobYear || prev.dobYear;
-                        const month = newState.dobMonth || prev.dobMonth;
-                        const day = newState.dobDay || prev.dobDay;
-                        
-                        if (year && month && day) {
-                            newState.dateOfBirth = `${year}-${month}-${day}`; 
-                            setErrors(prevErrors => {
-                                const { dateOfBirth, ...rest } = prevErrors;
-                                return rest;
-                            });
-                        } else {
-                            newState.dateOfBirth = '';
-                        }
-                    }
-                    return newState;
-                });
-                addLog('fieldInput', { 
-                    fieldName: name,
-                    newValue: value,
-                    characterCount: value.length
-                });
-            };
-
-            const handleNext = () => {
-                addLog('navigationAttempt', { action: 'next' });
-                if (validateStep(step)) {
-                    addLog('navigationSuccess', { action: 'next' });
-                    setStep(prev => prev + 1);
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                } else {
-                    addLog('navigationBlock', { 
-                        action: 'next', 
-                        reason: 'validation_errors', 
-                        errorCount: Object.keys(errors).length,
-                        errorCategories: errorCategories
-                    });
-                    if (errorModalRef.current) {
-                        errorModalRef.current.style.display = 'flex';
-                        setTimeout(() => {
-                             errorModalRef.current.style.display = 'none';
-                        }, 3000);
-                    }
-                }
-            };
-
-            const handleBack = () => {
-                addLog('navigationAttempt', { action: 'back' });
-                setStep(prev => prev - 1);
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            };
-
-            const handleSubmit = async (e) => {
-                e.preventDefault();
-                addLog('navigationAttempt', { action: 'submit' });
-
-                if (validateStep(step)) {
-                    const endTime = performance.now();
-                    const completionTime = ((endTime - (firstInteraction || endTime)) / 1000).toFixed(2);
-                    const totalErrors = logs.filter(l => l.event === 'validationError').length;
-
-                    addLog('formSubmit', { 
-                        timestamp: endTime, 
-                        completionTime,
-                        totalErrors,
-                        errorCategories
-                    });
-                    const storedData = JSON.parse(localStorage.getItem('formStudyData') || '{}');
-                    localStorage.setItem('formStudyData', JSON.stringify({
-                        ...storedData,
-                        status: {
-                            ...storedData.status,
-                            'B': { 
-                                status: 'complete', 
-                                errors: totalErrors,
-                                errorCategories,
-                                time: completionTime 
-                            }
-                        }
-                    }));
-
-                    sessionStorage.setItem('formSubmittedB', 'true');
-                    window.location.href = `NASATLX.html?variant=B&participant=${participantId.current}`;
-                } else {
-                    addLog('navigationBlock', { 
-                        action: 'submit', 
-                        reason: 'validation_errors', 
-                        errorCount: Object.keys(errors).length,
-                        errorCategories
-                    });
-                    if (errorModalRef.current) {
-                        errorModalRef.current.style.display = 'flex';
-                        setTimeout(() => {
-                            errorModalRef.current.style.display = 'none';
-                        }, 3000);
-                    }
-                }
-            };
-const renderField = (fieldConfig) => {
-                const { name, label, type, required, colSpan = 1, futureYears = 0 } = fieldConfig;
-                const hasError = errors[name];
-                const colClass = colSpan === 2 ? 'md:col-span-2' : '';
-
-                if (type === 'file') {
-                    return (
-                        <div key={name} className={colClass}>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">{label} {required && '*'}</label>
-                            <input
-                                type="file"
-                                name={name}
-                                onChange={handleChange}
-                                onFocus={() => handleFocus(name)}
-                                accept=".pdf,.doc,.docx"
-                                autoComplete="off"
-                                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${hasError ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-indigo-500'}`}
-                            />
-                            {formData[name] && <p className="text-xs text-gray-600 mt-1">Selected: {formData[name].name}</p>}
-                            {hasError && <p className="text-red-500 text-xs mt-1">{hasError}</p>}
-                        </div>
-                    );
-                }
-
-                if (type === 'textarea') {
-                    return (
-                        <div key={name} className={colClass}>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">{label} {required && '*'}</label>
-                            <textarea
-                                name={name}
-                                value={formData[name]}
-                                onChange={handleChange}
-                                onFocus={() => handleFocus(name)}
-                                onBlur={(e) => handleBlur(name, e.target.value)}
-                                rows="4"
-                                autoComplete="off"
-                                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${hasError ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-indigo-500'}`}
-                                placeholder={`Enter your ${label.toLowerCase()} here...`}
-                            />
-                            {hasError && <p className="text-red-500 text-xs mt-1">{hasError}</p>}
-                        </div>
-                    );
-                }
-
-                if (type === 'select') {
-                    const options = name === 'employmentStatus' ? 
-                        ['Select...', 'Employed', 'Unemployed', 'Student', 'Self-Employed'] : [];
-                    if (name === 'desiredPosition') {
-                        options.push('Select...', 'Software Engineer', 'Product Manager', 'Designer', 'Data Analyst', 'Other');
-                    } else if (options.length === 0) {
-                        options.push('Select...');
-                    }   
-                    return (
-                        <div key={name} className={colClass}>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">{label} {required && '*'}</label>
-                            <select
-                                name={name}
-                                value={formData[name]}
-                                onChange={handleChange}
-                                onFocus={() => handleFocus(name)}
-                                onBlur={(e) => handleBlur(name, e.target.value)}
-                                autoComplete="off"
-                                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${hasError ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-indigo-500'}`}
-                            >
-                                {options.map(opt => <option key={opt} value={opt === 'Select...' ? '' : opt.toLowerCase()}>{opt}</option>)}
-                            </select>
-                            {hasError && <p className="text-red-500 text-xs mt-1">{hasError}</p>}
-                        </div>
-                    );
-                }
-
-                if (type === 'number-select') {
-                    return (
-                        <div key={name} className={colClass}>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">{label} {required && '*'}</label>
-                            <select
-                                name={name}
-                                value={formData[name]}
-                                onChange={handleChange}
-                                onFocus={() => handleFocus(name)}
-                                onBlur={(e) => handleBlur(name, e.target.value)}
-                                autoComplete="off"
-                                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${hasError ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-indigo-500'}`}
-                            >
-                                <option value="">Select Years</option>
-                                {Array.from({ length: 51 }, (_, i) => i).map(year => (
-                                    <option key={year} value={year}>{year} {year === 1 ? 'year' : 'years'}</option>
-                                ))}
-                            </select>
-                            {hasError && <p className="text-red-500 text-xs mt-1">{hasError}</p>}
-                        </div>
-                    );
-                }
-
-                if (type === 'year-select') {
-                    const currentYear = new Date().getFullYear();
-                    const startYear = currentYear - 100;
-                    const endYear = currentYear + futureYears;
-                    return (
-                        <div key={name} className={colClass}>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">{label} {required && '*'}</label>
-                            <select
-                                name={name}
-                                value={formData[name]}
-                                onChange={handleChange}
-                                onFocus={() => handleFocus(name)}
-                                onBlur={(e) => handleBlur(name, e.target.value)}
-                                autoComplete="off"
-                                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${hasError ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-indigo-500'}`}
-                            >
-                                <option value="">Select Year</option>
-                                {Array.from({ length: endYear - startYear + 1 }, (_, i) => endYear - i).map(year => (
-                                    <option key={year} value={year}>{year}</option>
-                                ))}
-                            </select>
-                            {hasError && <p className="text-red-500 text-xs mt-1">{hasError}</p>}
-                        </div>
-                    );
-                }
-                
-                if (type === 'date-composite') {
-                    return (
-                        <div key={name} className={colClass}>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">{label} {required && '*'}</label>
-                            <div className="grid grid-cols-3 gap-2">
-                                <select 
-                                    name="dobYear" 
-                                    value={formData.dobYear} 
-                                    onChange={handleChange} 
-                                    onFocus={() => handleFocus('dobYear')} 
-                                    onBlur={(e) => handleBlur('dobYear', e.target.value)}
-                                    autoComplete="off"
-                                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${errors.dateOfBirth ? 'border-red-500' : 'border-gray-300 focus:ring-indigo-500'}`}
-                                >
-                                    <option value="">Year</option>
-                                    {Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i).map(year => <option key={year} value={year}>{year}</option>)}
-                                </select>
-                                <select 
-                                    name="dobMonth" 
-                                    value={formData.dobMonth} 
-                                    onChange={handleChange} 
-                                    onFocus={() => handleFocus('dobMonth')} 
-                                    onBlur={(e) => handleBlur('dobMonth', e.target.value)}
-                                    autoComplete="off"
-                                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${errors.dateOfBirth ? 'border-red-500' : 'border-gray-300 focus:ring-indigo-500'}`}
-                                >
-                                    <option value="">Month</option>
-                                    {Array.from({ length: 12 }, (_, i) => String(i + 1).padStart(2, '0')).map(month => <option key={month} value={month}>{new Date(0, month-1).toLocaleString('default', { month: 'short' })}</option>)}
-                                </select>
-                                <select 
-                                    name="dobDay" 
-                                    value={formData.dobDay} 
-                                    onChange={handleChange} 
-                                    onFocus={() => handleFocus('dobDay')} 
-                                    onBlur={(e) => handleBlur('dobDay', e.target.value)}
-                                    autoComplete="off"
-                                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${errors.dateOfBirth ? 'border-red-500' : 'border-gray-300 focus:ring-indigo-500'}`}
-                                >
-                                    <option value="">Day</option>
-                                    {Array.from({ length: 31 }, (_, i) => String(i + 1).padStart(2, '0')).map(day => <option key={day} value={day}>{day}</option>)}
-                                </select>
-                            </div>
-                            {errors.dateOfBirth && <p className="text-red-500 text-xs mt-1">{errors.dateOfBirth}</p>}
-                        </div>
-                    );
-                }
-
-                return (
-                    <div key={name} className={colClass}>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">{label} {required && '*'}</label>
-                        <input
-                            type={type}
-                            name={name}
-                            value={formData[name]}
-                            onChange={handleChange}
-                            onFocus={() => handleFocus(name)}
-                            onBlur={(e) => handleBlur(name, e.target.value)}
-                            autoComplete="off"
-                            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${hasError ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-indigo-500'}`}
-                            required={required}
-                        />
-                        {hasError && <p className="text-red-500 text-xs mt-1">{hasError}</p>}
-                    </div>
-                );
-            };
-
-            const renderCurrentStepFields = () => {
-                const fieldsInCurrentStep = ALL_FIELDS.filter(f => f.step === step);
-                const groupedFields = fieldsInCurrentStep.reduce((acc, field) => {
-                    const group = field.group;
-                    if (!acc[group]) acc[group] = [];
-                    acc[group].push(field);
-                    return acc;
-                }, {});
-
-                return Object.keys(groupedFields).map(groupName => (
-                    <div key={groupName} className="mb-8 p-6 rounded-xl bg-gray-50/70 shadow-inner">
-                        <h3 className="text-xl font-bold text-indigo-700 mb-6 pb-2 border-b-2 border-indigo-300">{groupName}</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {groupedFields[groupName].map(renderField)}
-                        </div>
-                    </div>
-                ));
-            };
-
-            const renderProgressBar = () => (
-                <div className="mb-8 p-4 bg-white rounded-xl shadow-lg">
-                    <nav aria-label="Progress" className="w-full">
-                        <ol role="list" className="flex items-center justify-between">
-                            {[...Array(TOTAL_STEPS)].map((_, index) => {
-                                const stepNumber = index + 1;
-                                const isCurrent = stepNumber === step;
-                                const isCompleted = stepNumber < step;
-                                
-                                let circleClasses = 'w-10 h-10 flex items-center justify-center rounded-full font-bold text-sm transition duration-300 ease-in-out z-10';
-                                let lineClasses = 'flex-1 h-1 transition duration-300 ease-in-out';
-                                
-                                if (isCompleted) {
-                                    circleClasses += ' bg-indigo-600 text-white';
-                                    lineClasses += ' bg-indigo-600';
-                                } else if (isCurrent) {
-                                    circleClasses += ' bg-indigo-500 text-white shadow-lg ring-4 ring-indigo-200';
-                                    lineClasses += ' bg-gray-300';
-                                } else {
-                                    circleClasses += ' bg-white border-2 border-gray-300 text-gray-500';
-                                    lineClasses += ' bg-gray-300';
-                                }
-
-                                return (
-                                    <React.Fragment key={stepNumber}>
-                                        <li className="flex items-center">
-                                            <div className={circleClasses}>
-                                                {isCompleted ? <Check size={16} /> : stepNumber}
-                                            </div>
-                                        </li>
-                                        {stepNumber < TOTAL_STEPS && (
-                                            <div className={lineClasses}></div>
-                                        )}
-                                    </React.Fragment>
-                                );
-                            })}
-                        </ol>
-                    </nav>
-                     <div className="text-center text-indigo-700 font-semibold mt-4">
-                        Step {step} of {TOTAL_STEPS}: {getStepName(step)}
-                    </div>
-                </div>
+            const { error, errorType } = validateField(
+              field.name,
+              value,
+              field.required
             );
+            if (error) {
+              newErrors[field.name] = error;
+              if (errorType) errorCounts[errorType]++;
+              addLog("validationError", {
+                fieldName: field.name,
+                errorType: errorType,
+                errorMessage: error,
+                fieldValue:
+                  field.type === "file"
+                    ? formData[field.name]?.name || ""
+                    : value || "",
+                characterCount:
+                  field.type === "file"
+                    ? formData[field.name]?.name?.length || 0
+                    : (value || "").length || 0,
+              });
+            }
+          });
 
-            return (
-                <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-4 sm:p-8 font-sans">
-                    <div ref={errorModalRef} style={{ display: 'none' }} className="fixed top-4 right-4 z-50 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg shadow-xl animate-fade-in-down">
-                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd"></path></svg>
-                        <p className="font-medium text-sm">Please correct the highlighted error(s) to continue.</p>
-                    </div>
+          setErrors((prevErrors) => {
+            const stepFields = fieldsInStep.map((f) => f.name);
+            const filteredErrors = Object.keys(prevErrors)
+              .filter((name) => !stepFields.includes(name))
+              .reduce((acc, name) => {
+                acc[name] = prevErrors[name];
+                return acc;
+              }, {});
+            return { ...filteredErrors, ...newErrors };
+          });
 
-                    <form onSubmit={(e) => e.preventDefault()} className="max-w-4xl mx-auto bg-white rounded-xl shadow-2xl p-6 sm:p-10">
-                        <div className="mb-8">
-                            <h1 className="text-3xl font-extrabold text-gray-900 mb-2">Job Application Form</h1>
-                            <p className="text-gray-600">Variant B: Multi-Step Form</p>
-                            <p className="text-sm text-gray-500 mt-1">Participant ID: {participantId.current}</p>
-                        </div>
-                        
-                        {renderProgressBar()}
+          setErrorCategories((prev) => ({
+            missing_required:
+              prev.missing_required + errorCounts.missing_required,
+            invalid_format: prev.invalid_format + errorCounts.invalid_format,
+            incomplete_data: prev.incomplete_data + errorCounts.incomplete_data,
+          }));
 
-                        <div className="space-y-6">
-                            {renderCurrentStepFields()}
-                        </div>
+          return Object.keys(newErrors).length === 0;
+        };
 
-                        <div className="flex justify-between pt-8 border-t mt-8">
-                            <button
-                                type="button"
-                                onClick={handleBack}
-                                disabled={step === 1}
-                                className={`px-6 py-3 rounded-lg font-semibold transition ${step === 1 ? 'bg-gray-200 text-gray-500 cursor-not-allowed' : 'bg-white text-indigo-600 border border-indigo-600 hover:bg-indigo-50 shadow-md'}`}
-                            >
-                                Back
-                            </button>
-                            
-                            {step < TOTAL_STEPS && (
-                                <button 
-                                    type="button"
-                                    onClick={handleNext}
-                                    className="bg-indigo-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition shadow-md"
-                                >
-                                    Next Step
-                                </button>
-                            )}
+        const handleFocus = (fieldName) => {
+          if (!firstInteraction) {
+            setFirstInteraction(performance.now());
+            addLog("firstInteraction", { fieldName });
+          }
+          const focusTime = performance.now();
+          setFieldStartTime((prev) => ({ ...prev, [fieldName]: focusTime }));
+          addLog("fieldFocus", {
+            fieldName,
+            currentValue: formData[fieldName] || "",
+            characterCount: (formData[fieldName] || "").length,
+          });
+        };
 
-                            {step === TOTAL_STEPS && (
-                                <button 
-                                    type="button"
-                                    onClick={handleSubmit}
-                                    className="bg-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 transition shadow-md"
-                                >
-                                    Submit Application
-                                </button>
-                            )}
-                        </div>
-                    </form>
-                </div>
+        const handleBlur = (fieldName, value) => {
+          const blurTime = performance.now();
+          const startTime = fieldStartTime[fieldName];
+          const timeSpent = startTime
+            ? ((blurTime - startTime) / 1000).toFixed(2)
+            : 0;
+
+          setFieldTimers((prev) => ({
+            ...prev,
+            [fieldName]: (prev[fieldName] || 0) + parseFloat(timeSpent),
+          }));
+
+          addLog("fieldBlur", {
+            fieldName,
+            timeSpentSeconds: parseFloat(timeSpent),
+            finalValue: value || "",
+            characterCount: (value || "").length,
+          });
+
+          const field = ALL_FIELDS.find((f) => f.name === fieldName);
+          if (
+            field &&
+            field.type !== "date-composite" &&
+            field.type !== "file"
+          ) {
+            const { error, errorType } = validateField(
+              fieldName,
+              value,
+              field.required
             );
+            setErrors((prev) => {
+              const newErrors = { ...prev };
+              if (error) {
+                newErrors[fieldName] = error;
+                if (errorType) {
+                  setErrorCategories((prevCat) => ({
+                    ...prevCat,
+                    [errorType]: prevCat[errorType] + 1,
+                  }));
+                }
+                addLog("validationError", {
+                  fieldName,
+                  errorType: errorType,
+                  errorMessage: error,
+                  fieldValue: value || "",
+                  characterCount: (value || "").length,
+                });
+              } else {
+                delete newErrors[fieldName];
+              }
+              return newErrors;
+            });
+          }
+        };
+
+        const handleChange = (e) => {
+          const { name, value, type, files } = e.target;
+
+          if (type === "file") {
+            const file = files[0];
+            setFormData((prev) => ({ ...prev, [name]: file }));
+            if (file) {
+              setErrors((prev) => {
+                const newErrors = { ...prev };
+                delete newErrors[name];
+                return newErrors;
+              });
+            }
+            addLog("fieldInput", {
+              fieldName: name,
+              newValue: file ? file.name : "",
+              characterCount: file ? file.name.length : 0,
+              fileSize: file ? file.size : 0,
+              fileType: file ? file.type : "",
+            });
+            return;
+          }
+
+          setFormData((prev) => {
+            const newState = { ...prev, [name]: value };
+
+            if (name.startsWith("dob")) {
+              const year = newState.dobYear || prev.dobYear;
+              const month = newState.dobMonth || prev.dobMonth;
+              const day = newState.dobDay || prev.dobDay;
+
+              if (year && month && day) {
+                newState.dateOfBirth = `${year}-${month}-${day}`;
+                setErrors((prevErrors) => {
+                  const { dateOfBirth, ...rest } = prevErrors;
+                  return rest;
+                });
+              } else {
+                newState.dateOfBirth = "";
+              }
+            }
+            return newState;
+          });
+          addLog("fieldInput", {
+            fieldName: name,
+            newValue: value,
+            characterCount: value.length,
+          });
+        };
+
+        const handleNext = () => {
+          addLog("navigationAttempt", { action: "next" });
+          if (validateStep(step)) {
+            addLog("navigationSuccess", { action: "next" });
+            setStep((prev) => prev + 1);
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          } else {
+            addLog("navigationBlock", {
+              action: "next",
+              reason: "validation_errors",
+              errorCount: Object.keys(errors).length,
+              errorCategories: errorCategories,
+            });
+            if (errorModalRef.current) {
+              errorModalRef.current.style.display = "flex";
+              setTimeout(() => {
+                errorModalRef.current.style.display = "none";
+              }, 3000);
+            }
+          }
+        };
+
+        const handleBack = () => {
+          addLog("navigationAttempt", { action: "back" });
+          setStep((prev) => prev - 1);
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        };
+
+        const handleSubmit = async (e) => {
+    e.preventDefault();
+    addLog('navigationAttempt', { action: 'submit' });
+    
+    if (validateForm()) {  // ✅ Changed from validateStep(step)
+        const endTime = performance.now();
+        const completionTime = ((endTime - (firstInteraction || endTime)) / 1000).toFixed(2);
+        const totalErrors = logs.filter(l => l.event === 'validationError').length;
+        
+        addLog('formSubmit', { 
+            timestamp: endTime, 
+            completionTime,
+            totalErrors,
+            errorCategories
+        });
+        
+        // Get variant from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const currentVariant = urlParams.get('variant') || 'B';  // ← 'A' for VariantA
+        
+        // ✅ SAVE DATA IN CORRECT FORMAT
+        const logKey = `logs_${currentVariant}`;
+        const allLogs = JSON.parse(localStorage.getItem(logKey) || '{}');
+        
+        allLogs[participantId.current] = {
+            timestamp: new Date().toISOString(),
+            completionTime: completionTime,
+            totalErrors: totalErrors,
+            errorCategories: errorCategories,
+            totalEvents: logs.length,
+            firstInteraction: firstInteraction,
+            formSubmitTime: endTime,
+            detailedLogs: logs  // ✅ This is critical for field-level analytics!
+        };
+        
+        localStorage.setItem(logKey, JSON.stringify(allLogs));
+        console.log('✅ Saved to localStorage:', logKey, allLogs);
+        
+        // Update status
+        const storedData = JSON.parse(localStorage.getItem('formStudyData') || '{}');
+        localStorage.setItem('formStudyData', JSON.stringify({
+            ...storedData,
+            status: {
+                ...storedData.status,
+                [currentVariant]: {
+                    status: 'complete', 
+                    errors: totalErrors,
+                    errorCategories,
+                    time: completionTime 
+                }
+            }
+        }));
+        
+        // Redirect to NASA-TLX
+        window.location.href = `NASATLX.html?participant=${participantId.current}&variant=${currentVariant}`;
+        
+    } else {
+        addLog('navigationBlock', { 
+            action: 'submit', 
+            reason: 'validation_errors', 
+            errorCount: Object.keys(errors).length,
+            errorCategories
+        });
+        
+        if (errorModalRef.current) {
+            errorModalRef.current.style.display = 'flex';
+            setTimeout(() => {
+                errorModalRef.current.style.display = 'none';
+            }, 3000);
         }
+    }
+};
+        const renderField = (fieldConfig) => {
+          const {
+            name,
+            label,
+            type,
+            required,
+            colSpan = 1,
+            futureYears = 0,
+          } = fieldConfig;
+          const hasError = errors[name];
+          const colClass = colSpan === 2 ? "md:col-span-2" : "";
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<MultiStepForm />);
+          if (type === "file") {
+            return (
+              <div key={name} className={colClass}>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {label} {required && "*"}
+                </label>
+                <input
+                  type="file"
+                  name={name}
+                  onChange={handleChange}
+                  onFocus={() => handleFocus(name)}
+                  accept=".pdf,.doc,.docx"
+                  autoComplete="off"
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+                    hasError
+                      ? "border-red-500 focus:ring-red-500"
+                      : "border-gray-300 focus:ring-indigo-500"
+                  }`}
+                />
+                {formData[name] && (
+                  <p className="text-xs text-gray-600 mt-1">
+                    Selected: {formData[name].name}
+                  </p>
+                )}
+                {hasError && (
+                  <p className="text-red-500 text-xs mt-1">{hasError}</p>
+                )}
+              </div>
+            );
+          }
+
+          if (type === "textarea") {
+            return (
+              <div key={name} className={colClass}>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {label} {required && "*"}
+                </label>
+                <textarea
+                  name={name}
+                  value={formData[name]}
+                  onChange={handleChange}
+                  onFocus={() => handleFocus(name)}
+                  onBlur={(e) => handleBlur(name, e.target.value)}
+                  rows="4"
+                  autoComplete="off"
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+                    hasError
+                      ? "border-red-500 focus:ring-red-500"
+                      : "border-gray-300 focus:ring-indigo-500"
+                  }`}
+                  placeholder={`Enter your ${label.toLowerCase()} here...`}
+                />
+                {hasError && (
+                  <p className="text-red-500 text-xs mt-1">{hasError}</p>
+                )}
+              </div>
+            );
+          }
+
+          if (type === "select") {
+            const options =
+              name === "employmentStatus"
+                ? [
+                    "Select...",
+                    "Employed",
+                    "Unemployed",
+                    "Student",
+                    "Self-Employed",
+                  ]
+                : [];
+            if (name === "desiredPosition") {
+              options.push(
+                "Select...",
+                "Software Engineer",
+                "Product Manager",
+                "Designer",
+                "Data Analyst",
+                "Other"
+              );
+            } else if (options.length === 0) {
+              options.push("Select...");
+            }
+            return (
+              <div key={name} className={colClass}>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {label} {required && "*"}
+                </label>
+                <select
+                  name={name}
+                  value={formData[name]}
+                  onChange={handleChange}
+                  onFocus={() => handleFocus(name)}
+                  onBlur={(e) => handleBlur(name, e.target.value)}
+                  autoComplete="off"
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+                    hasError
+                      ? "border-red-500 focus:ring-red-500"
+                      : "border-gray-300 focus:ring-indigo-500"
+                  }`}
+                >
+                  {options.map((opt) => (
+                    <option
+                      key={opt}
+                      value={opt === "Select..." ? "" : opt.toLowerCase()}
+                    >
+                      {opt}
+                    </option>
+                  ))}
+                </select>
+                {hasError && (
+                  <p className="text-red-500 text-xs mt-1">{hasError}</p>
+                )}
+              </div>
+            );
+          }
+
+          if (type === "number-select") {
+            return (
+              <div key={name} className={colClass}>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {label} {required && "*"}
+                </label>
+                <select
+                  name={name}
+                  value={formData[name]}
+                  onChange={handleChange}
+                  onFocus={() => handleFocus(name)}
+                  onBlur={(e) => handleBlur(name, e.target.value)}
+                  autoComplete="off"
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+                    hasError
+                      ? "border-red-500 focus:ring-red-500"
+                      : "border-gray-300 focus:ring-indigo-500"
+                  }`}
+                >
+                  <option value="">Select Years</option>
+                  {Array.from({ length: 51 }, (_, i) => i).map((year) => (
+                    <option key={year} value={year}>
+                      {year} {year === 1 ? "year" : "years"}
+                    </option>
+                  ))}
+                </select>
+                {hasError && (
+                  <p className="text-red-500 text-xs mt-1">{hasError}</p>
+                )}
+              </div>
+            );
+          }
+
+          if (type === "year-select") {
+            const currentYear = new Date().getFullYear();
+            const startYear = currentYear - 100;
+            const endYear = currentYear + futureYears;
+            return (
+              <div key={name} className={colClass}>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {label} {required && "*"}
+                </label>
+                <select
+                  name={name}
+                  value={formData[name]}
+                  onChange={handleChange}
+                  onFocus={() => handleFocus(name)}
+                  onBlur={(e) => handleBlur(name, e.target.value)}
+                  autoComplete="off"
+                  className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+                    hasError
+                      ? "border-red-500 focus:ring-red-500"
+                      : "border-gray-300 focus:ring-indigo-500"
+                  }`}
+                >
+                  <option value="">Select Year</option>
+                  {Array.from(
+                    { length: endYear - startYear + 1 },
+                    (_, i) => endYear - i
+                  ).map((year) => (
+                    <option key={year} value={year}>
+                      {year}
+                    </option>
+                  ))}
+                </select>
+                {hasError && (
+                  <p className="text-red-500 text-xs mt-1">{hasError}</p>
+                )}
+              </div>
+            );
+          }
+
+          if (type === "date-composite") {
+            return (
+              <div key={name} className={colClass}>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  {label} {required && "*"}
+                </label>
+                <div className="grid grid-cols-3 gap-2">
+                  <select
+                    name="dobYear"
+                    value={formData.dobYear}
+                    onChange={handleChange}
+                    onFocus={() => handleFocus("dobYear")}
+                    onBlur={(e) => handleBlur("dobYear", e.target.value)}
+                    autoComplete="off"
+                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+                      errors.dateOfBirth
+                        ? "border-red-500"
+                        : "border-gray-300 focus:ring-indigo-500"
+                    }`}
+                  >
+                    <option value="">Year</option>
+                    {Array.from(
+                      { length: 100 },
+                      (_, i) => new Date().getFullYear() - i
+                    ).map((year) => (
+                      <option key={year} value={year}>
+                        {year}
+                      </option>
+                    ))}
+                  </select>
+                  <select
+                    name="dobMonth"
+                    value={formData.dobMonth}
+                    onChange={handleChange}
+                    onFocus={() => handleFocus("dobMonth")}
+                    onBlur={(e) => handleBlur("dobMonth", e.target.value)}
+                    autoComplete="off"
+                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+                      errors.dateOfBirth
+                        ? "border-red-500"
+                        : "border-gray-300 focus:ring-indigo-500"
+                    }`}
+                  >
+                    <option value="">Month</option>
+                    {Array.from({ length: 12 }, (_, i) =>
+                      String(i + 1).padStart(2, "0")
+                    ).map((month) => (
+                      <option key={month} value={month}>
+                        {new Date(0, month - 1).toLocaleString("default", {
+                          month: "short",
+                        })}
+                      </option>
+                    ))}
+                  </select>
+                  <select
+                    name="dobDay"
+                    value={formData.dobDay}
+                    onChange={handleChange}
+                    onFocus={() => handleFocus("dobDay")}
+                    onBlur={(e) => handleBlur("dobDay", e.target.value)}
+                    autoComplete="off"
+                    className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+                      errors.dateOfBirth
+                        ? "border-red-500"
+                        : "border-gray-300 focus:ring-indigo-500"
+                    }`}
+                  >
+                    <option value="">Day</option>
+                    {Array.from({ length: 31 }, (_, i) =>
+                      String(i + 1).padStart(2, "0")
+                    ).map((day) => (
+                      <option key={day} value={day}>
+                        {day}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {errors.dateOfBirth && (
+                  <p className="text-red-500 text-xs mt-1">
+                    {errors.dateOfBirth}
+                  </p>
+                )}
+              </div>
+            );
+          }
+
+          return (
+            <div key={name} className={colClass}>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {label} {required && "*"}
+              </label>
+              <input
+                type={type}
+                name={name}
+                value={formData[name]}
+                onChange={handleChange}
+                onFocus={() => handleFocus(name)}
+                onBlur={(e) => handleBlur(name, e.target.value)}
+                autoComplete="off"
+                className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+                  hasError
+                    ? "border-red-500 focus:ring-red-500"
+                    : "border-gray-300 focus:ring-indigo-500"
+                }`}
+                required={required}
+              />
+              {hasError && (
+                <p className="text-red-500 text-xs mt-1">{hasError}</p>
+              )}
+            </div>
+          );
+        };
+
+        const renderCurrentStepFields = () => {
+          const fieldsInCurrentStep = ALL_FIELDS.filter((f) => f.step === step);
+          const groupedFields = fieldsInCurrentStep.reduce((acc, field) => {
+            const group = field.group;
+            if (!acc[group]) acc[group] = [];
+            acc[group].push(field);
+            return acc;
+          }, {});
+
+          return Object.keys(groupedFields).map((groupName) => (
+            <div
+              key={groupName}
+              className="mb-8 p-6 rounded-xl bg-gray-50/70 shadow-inner"
+            >
+              <h3 className="text-xl font-bold text-indigo-700 mb-6 pb-2 border-b-2 border-indigo-300">
+                {groupName}
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {groupedFields[groupName].map(renderField)}
+              </div>
+            </div>
+          ));
+        };
+
+        const renderProgressBar = () => (
+          <div className="mb-8 p-4 bg-white rounded-xl shadow-lg">
+            <nav aria-label="Progress" className="w-full">
+              <ol role="list" className="flex items-center justify-between">
+                {[...Array(TOTAL_STEPS)].map((_, index) => {
+                  const stepNumber = index + 1;
+                  const isCurrent = stepNumber === step;
+                  const isCompleted = stepNumber < step;
+
+                  let circleClasses =
+                    "w-10 h-10 flex items-center justify-center rounded-full font-bold text-sm transition duration-300 ease-in-out z-10";
+                  let lineClasses =
+                    "flex-1 h-1 transition duration-300 ease-in-out";
+
+                  if (isCompleted) {
+                    circleClasses += " bg-indigo-600 text-white";
+                    lineClasses += " bg-indigo-600";
+                  } else if (isCurrent) {
+                    circleClasses +=
+                      " bg-indigo-500 text-white shadow-lg ring-4 ring-indigo-200";
+                    lineClasses += " bg-gray-300";
+                  } else {
+                    circleClasses +=
+                      " bg-white border-2 border-gray-300 text-gray-500";
+                    lineClasses += " bg-gray-300";
+                  }
+
+                  return (
+                    <React.Fragment key={stepNumber}>
+                      <li className="flex items-center">
+                        <div className={circleClasses}>
+                          {isCompleted ? <Check size={16} /> : stepNumber}
+                        </div>
+                      </li>
+                      {stepNumber < TOTAL_STEPS && (
+                        <div className={lineClasses}></div>
+                      )}
+                    </React.Fragment>
+                  );
+                })}
+              </ol>
+            </nav>
+            <div className="text-center text-indigo-700 font-semibold mt-4">
+              Step {step} of {TOTAL_STEPS}: {getStepName(step)}
+            </div>
+          </div>
+        );
+
+        return (
+          <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-4 sm:p-8 font-sans">
+            <div
+              ref={errorModalRef}
+              style={{ display: "none" }}
+              className="fixed top-4 right-4 z-50 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg shadow-xl animate-fade-in-down"
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fillRule="evenodd"
+                  d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                  clipRule="evenodd"
+                ></path>
+              </svg>
+              <p className="font-medium text-sm">
+                Please correct the highlighted error(s) to continue.
+              </p>
+            </div>
+
+            <form
+              onSubmit={(e) => e.preventDefault()}
+              className="max-w-4xl mx-auto bg-white rounded-xl shadow-2xl p-6 sm:p-10"
+            >
+              <div className="mb-8">
+                <h1 className="text-3xl font-extrabold text-gray-900 mb-2">
+                  Job Application Form
+                </h1>
+                <p className="text-gray-600">Variant B: Multi-Step Form</p>
+                <p className="text-sm text-gray-500 mt-1">
+                  Participant ID: {participantId.current}
+                </p>
+              </div>
+
+              {renderProgressBar()}
+
+              <div className="space-y-6">{renderCurrentStepFields()}</div>
+
+              <div className="flex justify-between pt-8 border-t mt-8">
+                <button
+                  type="button"
+                  onClick={handleBack}
+                  disabled={step === 1}
+                  className={`px-6 py-3 rounded-lg font-semibold transition ${
+                    step === 1
+                      ? "bg-gray-200 text-gray-500 cursor-not-allowed"
+                      : "bg-white text-indigo-600 border border-indigo-600 hover:bg-indigo-50 shadow-md"
+                  }`}
+                >
+                  Back
+                </button>
+
+                {step < TOTAL_STEPS && (
+                  <button
+                    type="button"
+                    onClick={handleNext}
+                    className="bg-indigo-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition shadow-md"
+                  >
+                    Next Step
+                  </button>
+                )}
+
+                {step === TOTAL_STEPS && (
+                  <button
+                    type="button"
+                    onClick={handleSubmit}
+                    className="bg-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 transition shadow-md"
+                  >
+                    Submit Application
+                  </button>
+                )}
+              </div>
+            </form>
+          </div>
+        );
+      }
+
+      const root = ReactDOM.createRoot(document.getElementById("root"));
+      root.render(<MultiStepForm />);
     </script>
-</body>
+  </body>
 </html>
