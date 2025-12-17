@@ -1,428 +1,625 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Form UX Study - Welcome</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
         }
-        .fade-in { animation: fadeIn 0.6s ease-out forwards; }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .fade-in {
+        animation: fadeIn 0.6s ease-out forwards;
+      }
     </style>
-</head>
-<body class="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+  </head>
+  <body
+    class="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50"
+  >
     <div class="container mx-auto px-4 py-8 max-w-5xl">
-        
-        <!-- Welcome Section -->
-        <div id="welcomeSection" class="bg-white rounded-xl shadow-2xl p-8 mb-6 fade-in">
-            <div class="text-center mb-6">
-                <h1 class="text-4xl font-extrabold text-gray-900 mb-2">📋 Form Design UX Study</h1>
-                <p class="text-xl text-gray-600">Comparing User Experience Across Form Variants</p>
-            </div>
-
-            <div class="prose max-w-none">
-                <div class="bg-blue-50 border-l-4 border-blue-500 p-6 mb-6 rounded">
-                    <h2 class="text-2xl font-bold text-gray-900 mb-3">📖 Study Overview</h2>
-                    <p class="text-gray-700 mb-3">
-                        Thank you for participating in this user experience research study! This study compares three different 
-                        form designs to understand which provides the best user experience.
-                    </p>
-                    <p class="text-gray-700">
-                        <strong>Duration:</strong> Approximately 20-30 minutes<br>
-                        <strong>Participants:</strong> 24 total (You will be assigned an ID from P001 to P024)
-                    </p>
-                </div>
-
-                <div class="bg-green-50 border-l-4 border-green-500 p-6 mb-6 rounded">
-                    <h2 class="text-2xl font-bold text-gray-900 mb-3">✅ What You'll Do</h2>
-                    <ol class="list-decimal ml-6 space-y-2 text-gray-700">
-                        <li><strong>Enter your Participant ID</strong> (P001 through P024) - This ID will be used throughout the entire session</li>
-                        <li><strong>Complete THREE different form designs</strong> - Each form asks for the same information but presents it differently:
-                            <ul class="list-disc ml-6 mt-2">
-                                <li><strong>Variant A:</strong> Single-page form (all fields on one page)</li>
-                                <li><strong>Variant B:</strong> Multi-step wizard (divided into sections)</li>
-                                <li><strong>Variant C:</strong> Progressive disclosure (fields appear as you progress)</li>
-                            </ul>
-                        </li>
-                        <li><strong>Complete NASA-TLX Assessment</strong> after EACH form - Rate the mental workload</li>
-                        <li><strong>Complete Post-Study Interview</strong> - Answer 8 questions about your experience (audio recorded)</li>
-                        <li><strong>Export Your Data</strong> - Download a ZIP file with all your responses and send it to the researcher</li>
-                    </ol>
-                </div>
-
-                <div class="bg-yellow-50 border-l-4 border-yellow-500 p-6 mb-6 rounded">
-                    <h2 class="text-2xl font-bold text-gray-900 mb-3">⚠️ Important Instructions</h2>
-                    <ul class="list-disc ml-6 space-y-2 text-gray-700">
-                        <li><strong>Use the SAME browser</strong> throughout the entire study session</li>
-                        <li><strong>Do NOT close your browser</strong> until you've completed all steps and exported your data</li>
-                        <li><strong>Do NOT clear your browser history/cookies</strong> during the study</li>
-                        <li><strong>Fill out forms naturally</strong> - Use realistic information (you can use fake data, but be consistent)</li>
-                        <li><strong>Complete all forms in one sitting</strong> - The entire study should take 20-30 minutes</li>
-                        <li><strong>Your Participant ID</strong> will be remembered throughout the session - you won't need to re-enter it</li>
-                        <li><strong>Form order is balanced</strong> - Different participants see forms in different orders</li>
-                    </ul>
-                </div>
-
-                <div class="bg-purple-50 border-l-4 border-purple-500 p-6 mb-6 rounded">
-                    <h2 class="text-2xl font-bold text-gray-900 mb-3">🔒 Privacy & Data Collection</h2>
-                    <ul class="list-disc ml-6 space-y-2 text-gray-700">
-                        <li>All data is stored locally in your browser (not sent to any server during the study)</li>
-                        <li>Your responses are completely anonymous (use your assigned Participant ID only)</li>
-                        <li>Audio recordings are for research purposes only and will be kept confidential</li>
-                        <li>At the end, you'll download all your data as a ZIP file to send to the researcher</li>
-                        <li>You can withdraw at any time by simply closing the browser</li>
-                    </ul>
-                </div>
-
-                <div class="bg-indigo-50 border-l-4 border-indigo-500 p-6 mb-6 rounded">
-                    <h2 class="text-2xl font-bold text-gray-900 mb-3">📊 Study Flow</h2>
-                    <div class="space-y-4 text-gray-700">
-                        <div class="flex items-start">
-                            <div class="flex-shrink-0 w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold mr-3">1</div>
-                            <div>
-                                <strong>Enter Participant ID</strong>
-                                <p class="text-sm">You'll be assigned an ID (P001-P024). This stays with you for the entire study.</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start">
-                            <div class="flex-shrink-0 w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold mr-3">2</div>
-                            <div>
-                                <strong>Form 1</strong> → <strong>NASA-TLX</strong>
-                                <p class="text-sm">Complete first form variant, then rate the workload</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start">
-                            <div class="flex-shrink-0 w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold mr-3">3</div>
-                            <div>
-                                <strong>Form 2</strong> → <strong>NASA-TLX</strong>
-                                <p class="text-sm">Complete second form variant, then rate the workload</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start">
-                            <div class="flex-shrink-0 w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold mr-3">4</div>
-                            <div>
-                                <strong>Form 3</strong> → <strong>NASA-TLX</strong>
-                                <p class="text-sm">Complete third form variant, then rate the workload</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start">
-                            <div class="flex-shrink-0 w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold mr-3">5</div>
-                            <div>
-                                <strong>Post-Study Interview</strong>
-                                <p class="text-sm">Answer 8 questions about your experience (audio recorded)</p>
-                            </div>
-                        </div>
-                        <div class="flex items-start">
-                            <div class="flex-shrink-0 w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center font-bold mr-3">6</div>
-                            <div>
-                                <strong>Export & Send Data</strong>
-                                <p class="text-sm">Download ZIP file with all your responses and send to researcher</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bg-red-50 border-l-4 border-red-500 p-6 mb-6 rounded">
-                    <h2 class="text-2xl font-bold text-gray-900 mb-3">🎯 Tips for Best Experience</h2>
-                    <ul class="list-disc ml-6 space-y-2 text-gray-700">
-                        <li><strong>Use a desktop/laptop</strong> (mobile works but desktop is recommended)</li>
-                        <li><strong>Use Chrome, Firefox, or Edge</strong> (modern browsers work best)</li>
-                        <li><strong>Have about 30 minutes</strong> of uninterrupted time</li>
-                        <li><strong>Enable microphone access</strong> when prompted (for interview recording)</li>
-                        <li><strong>Be honest in your responses</strong> - there are no right or wrong answers</li>
-                        <li><strong>Complete the study in one session</strong> - don't take breaks between forms</li>
-                    </ul>
-                </div>
-            </div>
-
-            <div class="mt-8 text-center">
-                <button onclick="showParticipantEntry()" 
-                        class="bg-indigo-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-indigo-700 transition shadow-lg">
-                    ✅ I Understand - Begin Study
-                </button>
-            </div>
+      <!-- Welcome Section -->
+      <div
+        id="welcomeSection"
+        class="bg-white rounded-xl shadow-2xl p-8 mb-6 fade-in"
+      >
+        <div class="text-center mb-6">
+          <h1 class="text-4xl font-extrabold text-gray-900 mb-2">
+            📋 Form Design UX Study
+          </h1>
+          <p class="text-xl text-gray-600">
+            Comparing User Experience Across Form Variants
+          </p>
         </div>
 
-        <!-- Participant ID Entry Section -->
-        <div id="participantEntry" class="hidden bg-white rounded-xl shadow-2xl p-8 fade-in">
-            <h2 class="text-3xl font-bold text-gray-900 mb-6 text-center">Enter Your Participant ID</h2>
-            
-            <div class="max-w-md mx-auto">
-                <div class="mb-6">
-                    <label class="block text-gray-700 font-bold mb-2">Participant ID (P001 - P024):</label>
-                    <input type="text" 
-                           id="participantIdInput" 
-                           placeholder="e.g., P001"
-                           maxlength="4"
-                           class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-indigo-600 focus:outline-none text-2xl text-center font-mono uppercase"
-                           oninput="this.value = this.value.toUpperCase()">
-                    <p class="text-sm text-gray-500 mt-2">Format: P followed by 3 digits (P001, P002, ..., P024)</p>
-                </div>
+        <div class="prose max-w-none">
+          <div class="bg-blue-50 border-l-4 border-blue-500 p-6 mb-6 rounded">
+            <h2 class="text-2xl font-bold text-gray-900 mb-3">
+              📖 Study Overview
+            </h2>
+            <p class="text-gray-700 mb-3">
+              Thank you for participating in this user experience research
+              study! This study compares three different form designs to
+              understand which provides the best user experience.
+            </p>
+            <p class="text-gray-700">
+              <strong>Duration:</strong> Approximately 20-30 minutes<br />
+              <strong>Participants:</strong> 24 total (You will be assigned an
+              ID from P001 to P024)
+            </p>
+          </div>
 
-                <div id="errorMessage" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                    <strong>Error:</strong> <span id="errorText"></span>
-                </div>
+          <div class="bg-green-50 border-l-4 border-green-500 p-6 mb-6 rounded">
+            <h2 class="text-2xl font-bold text-gray-900 mb-3">
+              ✅ What You'll Do
+            </h2>
+            <ol class="list-decimal ml-6 space-y-2 text-gray-700">
+              <li>
+                <strong>Enter your Participant ID</strong> (P001 through P024) -
+                This ID will be used throughout the entire session
+              </li>
+              <li>
+                <strong>Complete THREE different form designs</strong> - Each
+                form asks for the same information but presents it differently:
+                <ul class="list-disc ml-6 mt-2">
+                  <li>
+                    <strong>Variant A:</strong> Single-page form (all fields on
+                    one page)
+                  </li>
+                  <li>
+                    <strong>Variant B:</strong> Multi-step wizard (divided into
+                    sections)
+                  </li>
+                  <li>
+                    <strong>Variant C:</strong> Progressive disclosure (fields
+                    appear as you progress)
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <strong>Complete NASA-TLX Assessment</strong> after EACH form -
+                Rate the mental workload
+              </li>
+              <li>
+                <strong>Complete Post-Study Interview</strong> - Answer 8
+                questions about your experience (audio recorded)
+              </li>
+              <li>
+                <strong>Export Your Data</strong> - Download a ZIP file with all
+                your responses and send it to the researcher
+              </li>
+            </ol>
+          </div>
 
-                <button onclick="validateAndStart()" 
-                        class="w-full bg-green-600 text-white px-6 py-4 rounded-lg font-bold text-lg hover:bg-green-700 transition shadow-lg">
-                    Start Study →
-                </button>
+          <div
+            class="bg-yellow-50 border-l-4 border-yellow-500 p-6 mb-6 rounded"
+          >
+            <h2 class="text-2xl font-bold text-gray-900 mb-3">
+              ⚠️ Important Instructions
+            </h2>
+            <ul class="list-disc ml-6 space-y-2 text-gray-700">
+              <li>
+                <strong>Use the SAME browser</strong> throughout the entire
+                study session
+              </li>
+              <li>
+                <strong>Do NOT close your browser</strong> until you've
+                completed all steps and exported your data
+              </li>
+              <li>
+                <strong>Do NOT clear your browser history/cookies</strong>
+                during the study
+              </li>
+              <li>
+                <strong>Fill out forms naturally</strong> - Use realistic
+                information (you can use fake data, but be consistent)
+              </li>
+              <li>
+                <strong>Complete all forms in one sitting</strong> - The entire
+                study should take 20-30 minutes
+              </li>
+              <li>
+                <strong>Your Participant ID</strong> will be remembered
+                throughout the session - you won't need to re-enter it
+              </li>
+              <li>
+                <strong>Form order is balanced</strong> - Different participants
+                see forms in different orders
+              </li>
+            </ul>
+          </div>
 
-                <div class="mt-6 p-4 bg-gray-50 rounded">
-                    <p class="text-sm text-gray-600">
-                        <strong>Note:</strong> Your Participant ID determines the order in which you'll see the three form variants. 
-                        This is automatically balanced across all participants using a Latin Square design.
-                    </p>
+          <div
+            class="bg-purple-50 border-l-4 border-purple-500 p-6 mb-6 rounded"
+          >
+            <h2 class="text-2xl font-bold text-gray-900 mb-3">
+              🔒 Privacy & Data Collection
+            </h2>
+            <ul class="list-disc ml-6 space-y-2 text-gray-700">
+              <li>
+                All data is stored locally in your browser (not sent to any
+                server during the study)
+              </li>
+              <li>
+                Your responses are completely anonymous (use your assigned
+                Participant ID only)
+              </li>
+              <li>
+                Audio recordings are for research purposes only and will be kept
+                confidential
+              </li>
+              <li>
+                At the end, you'll download all your data as a ZIP file to send
+                to the researcher
+              </li>
+              <li>
+                You can withdraw at any time by simply closing the browser
+              </li>
+            </ul>
+          </div>
+
+          <div
+            class="bg-indigo-50 border-l-4 border-indigo-500 p-6 mb-6 rounded"
+          >
+            <h2 class="text-2xl font-bold text-gray-900 mb-3">📊 Study Flow</h2>
+            <div class="space-y-4 text-gray-700">
+              <div class="flex items-start">
+                <div
+                  class="flex-shrink-0 w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold mr-3"
+                >
+                  1
                 </div>
+                <div>
+                  <strong>Enter Participant ID</strong>
+                  <p class="text-sm">
+                    You'll be assigned an ID (P001-P024). This stays with you
+                    for the entire study.
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-start">
+                <div
+                  class="flex-shrink-0 w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold mr-3"
+                >
+                  2
+                </div>
+                <div>
+                  <strong>Form 1</strong> → <strong>NASA-TLX</strong>
+                  <p class="text-sm">
+                    Complete first form variant, then rate the workload
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-start">
+                <div
+                  class="flex-shrink-0 w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold mr-3"
+                >
+                  3
+                </div>
+                <div>
+                  <strong>Form 2</strong> → <strong>NASA-TLX</strong>
+                  <p class="text-sm">
+                    Complete second form variant, then rate the workload
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-start">
+                <div
+                  class="flex-shrink-0 w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold mr-3"
+                >
+                  4
+                </div>
+                <div>
+                  <strong>Form 3</strong> → <strong>NASA-TLX</strong>
+                  <p class="text-sm">
+                    Complete third form variant, then rate the workload
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-start">
+                <div
+                  class="flex-shrink-0 w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold mr-3"
+                >
+                  5
+                </div>
+                <div>
+                  <strong>Post-Study Interview</strong>
+                  <p class="text-sm">
+                    Answer 8 questions about your experience (audio recorded)
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-start">
+                <div
+                  class="flex-shrink-0 w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center font-bold mr-3"
+                >
+                  6
+                </div>
+                <div>
+                  <strong>Export & Send Data</strong>
+                  <p class="text-sm">
+                    Download ZIP file with all your responses and send to
+                    researcher
+                  </p>
+                </div>
+              </div>
             </div>
+          </div>
+
+          <div class="bg-red-50 border-l-4 border-red-500 p-6 mb-6 rounded">
+            <h2 class="text-2xl font-bold text-gray-900 mb-3">
+              🎯 Tips for Best Experience
+            </h2>
+            <ul class="list-disc ml-6 space-y-2 text-gray-700">
+              <li>
+                <strong>Use a desktop/laptop</strong> (mobile works but desktop
+                is recommended)
+              </li>
+              <li>
+                <strong>Use Chrome, Firefox, or Edge</strong> (modern browsers
+                work best)
+              </li>
+              <li>
+                <strong>Have about 30 minutes</strong> of uninterrupted time
+              </li>
+              <li>
+                <strong>Enable microphone access</strong> when prompted (for
+                interview recording)
+              </li>
+              <li>
+                <strong>Be honest in your responses</strong> - there are no
+                right or wrong answers
+              </li>
+              <li>
+                <strong>Complete the study in one session</strong> - don't take
+                breaks between forms
+              </li>
+            </ul>
+          </div>
         </div>
 
-        <!-- Study Progress Section -->
-        <div id="studyProgress" class="hidden bg-white rounded-xl shadow-2xl p-8 fade-in">
-            <div class="mb-6">
-                <div class="flex items-center justify-between mb-2">
-                    <h2 class="text-2xl font-bold text-gray-900">Study Progress</h2>
-                    <span class="text-lg font-semibold text-indigo-600">Participant: <span id="displayParticipantId"></span></span>
-                </div>
-                <div class="bg-gray-200 rounded-full h-4 overflow-hidden">
-                    <div id="progressBar" class="bg-indigo-600 h-full transition-all duration-300" style="width: 0%"></div>
-                </div>
-                <p class="text-sm text-gray-600 mt-2"><span id="progressText">Step 0 of 7</span></p>
-            </div>
+        <div class="mt-8 text-center">
+          <button
+            onclick="showParticipantEntry()"
+            class="bg-indigo-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-indigo-700 transition shadow-lg"
+          >
+            ✅ I Understand - Begin Study
+          </button>
+        </div>
+      </div>
 
-            <div id="taskList" class="space-y-4">
-                <!-- Tasks will be populated by JavaScript -->
-            </div>
+      <!-- Participant ID Entry Section -->
+      <div
+        id="participantEntry"
+        class="hidden bg-white rounded-xl shadow-2xl p-8 fade-in"
+      >
+        <h2 class="text-3xl font-bold text-gray-900 mb-6 text-center">
+          Enter Your Participant ID
+        </h2>
 
-            <div class="mt-6 p-4 bg-yellow-50 border-l-4 border-yellow-500 rounded">
-                <p class="text-sm text-gray-700">
-                    <strong>Remember:</strong> Complete all steps in order. Your progress is automatically saved in your browser.
-                </p>
-            </div>
+        <div class="max-w-md mx-auto">
+          <div class="mb-6">
+            <label class="block text-gray-700 font-bold mb-2"
+              >Participant ID (P001 - P024):</label
+            >
+            <input
+              type="text"
+              id="participantIdInput"
+              placeholder="e.g., P001"
+              maxlength="4"
+              class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-indigo-600 focus:outline-none text-2xl text-center font-mono uppercase"
+              oninput="this.value = this.value.toUpperCase()"
+            />
+            <p class="text-sm text-gray-500 mt-2">
+              Format: P followed by 3 digits (P001, P002, ..., P024)
+            </p>
+          </div>
+
+          <div
+            id="errorMessage"
+            class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4"
+          >
+            <strong>Error:</strong> <span id="errorText"></span>
+          </div>
+
+          <button
+            onclick="validateAndStart()"
+            class="w-full bg-green-600 text-white px-6 py-4 rounded-lg font-bold text-lg hover:bg-green-700 transition shadow-lg"
+          >
+            Start Study →
+          </button>
+
+          <div class="mt-6 p-4 bg-gray-50 rounded">
+            <p class="text-sm text-gray-600">
+              <strong>Note:</strong> Your Participant ID determines the order in
+              which you'll see the three form variants. This is automatically
+              balanced across all participants using a Latin Square design.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Study Progress Section -->
+      <div
+        id="studyProgress"
+        class="hidden bg-white rounded-xl shadow-2xl p-8 fade-in"
+      >
+        <div class="mb-6">
+          <div class="flex items-center justify-between mb-2">
+            <h2 class="text-2xl font-bold text-gray-900">Study Progress</h2>
+            <span class="text-lg font-semibold text-indigo-600"
+              >Participant: <span id="displayParticipantId"></span
+            ></span>
+          </div>
+          <div class="bg-gray-200 rounded-full h-4 overflow-hidden">
+            <div
+              id="progressBar"
+              class="bg-indigo-600 h-full transition-all duration-300"
+              style="width: 0%"
+            ></div>
+          </div>
+          <p class="text-sm text-gray-600 mt-2">
+            <span id="progressText">Step 0 of 7</span>
+          </p>
         </div>
 
+        <div id="taskList" class="space-y-4">
+          <!-- Tasks will be populated by JavaScript -->
+        </div>
+
+        <div class="mt-6 p-4 bg-yellow-50 border-l-4 border-yellow-500 rounded">
+          <p class="text-sm text-gray-700">
+            <strong>Remember:</strong> Complete all steps in order. Your
+            progress is automatically saved in your browser.
+          </p>
+        </div>
+      </div>
     </div>
 
     <script>
-        // Latin Square counterbalancing for 24 participants
-        // Pattern repeats every 3 participants to ensure balance
-        const LATIN_SQUARE = {
-            1: ['A', 'B', 'C'],  // P001, P004, P007, P010, P013, P016, P019, P022
-            2: ['B', 'C', 'A'],  // P002, P005, P008, P011, P014, P017, P020, P023
-            3: ['C', 'A', 'B'],  // P003, P006, P009, P012, P015, P018, P021, P024
+      // Latin Square counterbalancing for 24 participants
+      // Pattern repeats every 3 participants to ensure balance
+      const LATIN_SQUARE = {
+        1: ["A", "B", "C"], // P001, P004, P007, P010, P013, P016, P019, P022
+        2: ["B", "C", "A"], // P002, P005, P008, P011, P014, P017, P020, P023
+        3: ["C", "A", "B"], // P003, P006, P009, P012, P015, P018, P021, P024
+      };
+
+      // Get form order based on participant number
+      function getFormOrder(participantNumber) {
+        const pattern = ((participantNumber - 1) % 3) + 1;
+        return LATIN_SQUARE[pattern];
+      }
+
+      // Show participant entry section
+      function showParticipantEntry() {
+        document.getElementById("welcomeSection").classList.add("hidden");
+        document.getElementById("participantEntry").classList.remove("hidden");
+        document.getElementById("participantIdInput").focus();
+      }
+
+      // Validate participant ID and start study
+      function validateAndStart() {
+        const input = document
+          .getElementById("participantIdInput")
+          .value.trim()
+          .toUpperCase();
+        const errorDiv = document.getElementById("errorMessage");
+        const errorText = document.getElementById("errorText");
+
+        // Validate format: P followed by 3 digits
+        const regex = /^P(\d{3})$/;
+        const match = input.match(regex);
+
+        if (!match) {
+          errorText.textContent =
+            "Invalid format. Please enter P followed by 3 digits (e.g., P001)";
+          errorDiv.classList.remove("hidden");
+          return;
+        }
+
+        const participantNumber = parseInt(match[1]);
+
+        if (participantNumber < 1 || participantNumber > 24) {
+          errorText.textContent =
+            "Participant ID must be between P001 and P024";
+          errorDiv.classList.remove("hidden");
+          return;
+        }
+
+        // Valid participant ID
+        const participantId = input;
+        const formOrder = getFormOrder(participantNumber);
+
+        // Store in localStorage
+        const studyData = {
+          participantId: participantId,
+          participantNumber: participantNumber,
+          formOrder: formOrder,
+          startTime: new Date().toISOString(),
+          status: {
+            A: { status: "pending" },
+            B: { status: "pending" },
+            C: { status: "pending" },
+            nasa_a: { status: "pending" },
+            nasa_b: { status: "pending" },
+            nasa_c: { status: "pending" },
+            interview: { status: "pending" },
+          },
         };
 
-        // Get form order based on participant number
-        function getFormOrder(participantNumber) {
-            const pattern = ((participantNumber - 1) % 3) + 1;
-            return LATIN_SQUARE[pattern];
-        }
+        localStorage.setItem("formStudyData", JSON.stringify(studyData));
 
-        // Show participant entry section
-        function showParticipantEntry() {
-            document.getElementById('welcomeSection').classList.add('hidden');
-            document.getElementById('participantEntry').classList.remove('hidden');
-            document.getElementById('participantIdInput').focus();
-        }
+        // Show progress page
+        initializeStudyProgress(studyData);
+      }
 
-        // Validate participant ID and start study
-        function validateAndStart() {
-            const input = document.getElementById('participantIdInput').value.trim().toUpperCase();
-            const errorDiv = document.getElementById('errorMessage');
-            const errorText = document.getElementById('errorText');
+      // Initialize study progress page
+      function initializeStudyProgress(studyData) {
+        document.getElementById("participantEntry").classList.add("hidden");
+        document.getElementById("studyProgress").classList.remove("hidden");
+        document.getElementById("displayParticipantId").textContent =
+          studyData.participantId;
 
-            // Validate format: P followed by 3 digits
-            const regex = /^P(\d{3})$/;
-            const match = input.match(regex);
+        // Build task list based on form order
+        const taskList = document.getElementById("taskList");
+        const formOrder = studyData.formOrder;
 
-            if (!match) {
-                errorText.textContent = 'Invalid format. Please enter P followed by 3 digits (e.g., P001)';
-                errorDiv.classList.remove('hidden');
-                return;
-            }
+        let taskHTML = "";
+        let taskNumber = 1;
+        let previousTaskCompleted = true; // First task is always unlocked
 
-            const participantNumber = parseInt(match[1]);
+        // Add tasks for each form + NASA-TLX
+        formOrder.forEach((variant, index) => {
+          const formStatus = studyData.status[variant].status;
+          const nasaStatus =
+            studyData.status[`nasa_${variant.toLowerCase()}`].status;
 
-            if (participantNumber < 1 || participantNumber > 24) {
-                errorText.textContent = 'Participant ID must be between P001 and P024';
-                errorDiv.classList.remove('hidden');
-                return;
-            }
+          // Form task
+          const formLocked = !previousTaskCompleted;
+          taskHTML += createTaskCard(
+            taskNumber++,
+            `Complete Form ${index + 1}: Variant ${variant}`,
+            getVariantDescription(variant),
+            formStatus,
+            `Variant${variant}.html?participant=${
+              studyData.participantId
+            }&variant=${variant}&order=${index + 1}`,
+            false,
+            formLocked
+          );
 
-            // Valid participant ID
-            const participantId = input;
-            const formOrder = getFormOrder(participantNumber);
+          // Update previous task status
+          previousTaskCompleted = formStatus === "complete";
 
-            // Store in localStorage
-            const studyData = {
-                participantId: participantId,
-                participantNumber: participantNumber,
-                formOrder: formOrder,
-                startTime: new Date().toISOString(),
-                status: {
-                    'A': { status: 'pending' },
-                    'B': { status: 'pending' },
-                    'C': { status: 'pending' },
-                    'nasa_a': { status: 'pending' },
-                    'nasa_b': { status: 'pending' },
-                    'nasa_c': { status: 'pending' },
-                    'interview': { status: 'pending' }
-                }
-            };
+          // NASA-TLX task (locked until form is complete)
+          const nasaLocked = !previousTaskCompleted;
+          taskHTML += createTaskCard(
+            taskNumber++,
+            `NASA-TLX Assessment (After Variant ${variant})`,
+            "Rate the mental workload of the form you just completed",
+            nasaStatus,
+            `NASATLX.html?participant=${studyData.participantId}&variant=${variant}`,
+            false,
+            nasaLocked
+          );
 
-            localStorage.setItem('formStudyData', JSON.stringify(studyData));
+          // Update previous task status
+          previousTaskCompleted = nasaStatus === "complete";
+        });
 
-            // Show progress page
-            initializeStudyProgress(studyData);
-        }
+        // Add interview task (locked until all forms and NASA-TLX complete)
+        const interviewStatus = studyData.status.interview.status;
+        const interviewLocked = !previousTaskCompleted;
+        taskHTML += createTaskCard(
+          taskNumber++,
+          "Post-Study Interview",
+          "Answer 8 questions about your experience (audio recorded)",
+          interviewStatus,
+          `Interviews.html?participant=${studyData.participantId}&variant=${formOrder[2]}`,
+          false,
+          interviewLocked
+        );
 
-        // Initialize study progress page
-        function initializeStudyProgress(studyData) {
-            document.getElementById('participantEntry').classList.add('hidden');
-            document.getElementById('studyProgress').classList.remove('hidden');
-            document.getElementById('displayParticipantId').textContent = studyData.participantId;
+        // Update previous task status
+        previousTaskCompleted = interviewStatus === "complete";
 
-            // Build task list based on form order
-            const taskList = document.getElementById('taskList');
-            const formOrder = studyData.formOrder;
-            
-            let taskHTML = '';
-            let taskNumber = 1;
-            let previousTaskCompleted = true; // First task is always unlocked
+        // Add export task (locked until interview complete)
+        const exportLocked = !previousTaskCompleted;
+        taskHTML += createTaskCard(
+          taskNumber++,
+          "Export & Send Data",
+          "Download your data as ZIP and send to researcher",
+          "pending",
+          "export-data.html",
+          true,
+          exportLocked
+        );
 
-            // Add tasks for each form + NASA-TLX
-            formOrder.forEach((variant, index) => {
-                const formStatus = studyData.status[variant].status;
-                const nasaStatus = studyData.status[`nasa_${variant.toLowerCase()}`].status;
+        taskList.innerHTML = taskHTML;
+        updateProgress(studyData);
+      }
 
-                // Form task
-                const formLocked = !previousTaskCompleted;
-                taskHTML += createTaskCard(
-                    taskNumber++,
-                    `Complete Form ${index + 1}: Variant ${variant}`,
-                    getVariantDescription(variant),
-                    formStatus,
-                    `Variant${variant}.html?participant=${studyData.participantId}&variant=${variant}&order=${index + 1}`,
-                    false,
-                    formLocked
-                );
-                
-                // Update previous task status
-                previousTaskCompleted = (formStatus === 'complete');
+      // Get variant description
+      function getVariantDescription(variant) {
+        const descriptions = {
+          A: "Single-page form - All fields on one page",
+          B: "Multi-step wizard - Divided into sections",
+          C: "Progressive disclosure - Fields appear as you progress",
+        };
+        return descriptions[variant];
+      }
 
-                // NASA-TLX task (locked until form is complete)
-                const nasaLocked = !previousTaskCompleted;
-                taskHTML += createTaskCard(
-                    taskNumber++,
-                    `NASA-TLX Assessment (After Variant ${variant})`,
-                    'Rate the mental workload of the form you just completed',
-                    nasaStatus,
-                    `NASATLX.html?participant=${studyData.participantId}&variant=${variant}`,
-                    false,
-                    nasaLocked
-                );
-                
-                // Update previous task status
-                previousTaskCompleted = (nasaStatus === 'complete');
-            });
+      // Create task card HTML
+      function createTaskCard(
+        number,
+        title,
+        description,
+        status,
+        link,
+        isExport = false,
+        isLocked = false
+      ) {
+        const statusIcons = {
+          pending: "⏳",
+          complete: "✅",
+          locked: "🔒",
+        };
 
-            // Add interview task (locked until all forms and NASA-TLX complete)
-            const interviewStatus = studyData.status.interview.status;
-            const interviewLocked = !previousTaskCompleted;
-            taskHTML += createTaskCard(
-                taskNumber++,
-                'Post-Study Interview',
-                'Answer 8 questions about your experience (audio recorded)',
-                interviewStatus,
-                `Interviews.html?participant=${studyData.participantId}&variant=${formOrder[2]}`,
-                false,
-                interviewLocked
-            );
-            
-            // Update previous task status
-            previousTaskCompleted = (interviewStatus === 'complete');
+        const statusColors = {
+          pending: "bg-gray-100 border-gray-300",
+          complete: "bg-green-100 border-green-500",
+          locked: "bg-gray-50 border-gray-200",
+        };
 
-            // Add export task (locked until interview complete)
-            const exportLocked = !previousTaskCompleted;
-            taskHTML += createTaskCard(
-                taskNumber++,
-                'Export & Send Data',
-                'Download your data as ZIP and send to researcher',
-                'pending',
-                'export-data.html',
-                true,
-                exportLocked
-            );
+        const statusTexts = {
+          pending: "Not Started",
+          complete: "Completed",
+          locked: "Locked - Complete previous steps first",
+        };
 
-            taskList.innerHTML = taskHTML;
-            updateProgress(studyData);
-        }
+        const displayStatus = isLocked ? "locked" : status;
+        const icon = statusIcons[displayStatus] || "⏳";
+        const color =
+          statusColors[displayStatus] || "bg-gray-100 border-gray-300";
+        const statusText = statusTexts[displayStatus] || "Not Started";
 
-        // Get variant description
-        function getVariantDescription(variant) {
-            const descriptions = {
-                'A': 'Single-page form - All fields on one page',
-                'B': 'Multi-step wizard - Divided into sections',
-                'C': 'Progressive disclosure - Fields appear as you progress'
-            };
-            return descriptions[variant];
-        }
-
-        // Create task card HTML
-        function createTaskCard(number, title, description, status, link, isExport = false, isLocked = false) {
-            const statusIcons = {
-                'pending': '⏳',
-                'complete': '✅',
-                'locked': '🔒'
-            };
-
-            const statusColors = {
-                'pending': 'bg-gray-100 border-gray-300',
-                'complete': 'bg-green-100 border-green-500',
-                'locked': 'bg-gray-50 border-gray-200'
-            };
-
-            const statusTexts = {
-                'pending': 'Not Started',
-                'complete': 'Completed',
-                'locked': 'Locked - Complete previous steps first'
-            };
-
-            const displayStatus = isLocked ? 'locked' : status;
-            const icon = statusIcons[displayStatus] || '⏳';
-            const color = statusColors[displayStatus] || 'bg-gray-100 border-gray-300';
-            const statusText = statusTexts[displayStatus] || 'Not Started';
-
-            let buttonHtml = '';
-            if (isLocked) {
-                buttonHtml = `
+        let buttonHtml = "";
+        if (isLocked) {
+          buttonHtml = `
                     <button disabled 
                             class="inline-block bg-gray-400 text-white px-4 py-2 rounded-lg font-semibold opacity-50 cursor-not-allowed">
                         🔒 Locked
                     </button>
                 `;
-            } else if (status === 'complete') {
-                buttonHtml = `
+        } else if (status === "complete") {
+          buttonHtml = `
                     <button disabled 
                             class="inline-block bg-green-600 text-white px-4 py-2 rounded-lg font-semibold opacity-50 cursor-not-allowed">
                         Completed ✓
                     </button>
                 `;
-            } else {
-                const buttonText = isExport ? 'Export Data' : 'Start Task';
-                buttonHtml = `
+        } else {
+          const buttonText = isExport ? "Export Data" : "Start Task";
+          buttonHtml = `
                     <a href="${link}" 
                        class="inline-block bg-indigo-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-indigo-700 transition">
                         ${buttonText}
                     </a>
                 `;
-            }
+        }
 
-            return `
-                <div class="border-2 ${color} rounded-lg p-4 ${isLocked ? 'opacity-60' : ''}">
+        return `
+                <div class="border-2 ${color} rounded-lg p-4 ${
+          isLocked ? "opacity-60" : ""
+        }">
                     <div class="flex items-start justify-between">
                         <div class="flex-1">
                             <div class="flex items-center gap-3 mb-2">
@@ -432,7 +629,13 @@
                                     <p class="text-sm text-gray-600">${description}</p>
                                 </div>
                             </div>
-                            <p class="text-sm font-semibold ${displayStatus === 'complete' ? 'text-green-600' : displayStatus === 'locked' ? 'text-gray-400' : 'text-gray-500'} ml-11">
+                            <p class="text-sm font-semibold ${
+                              displayStatus === "complete"
+                                ? "text-green-600"
+                                : displayStatus === "locked"
+                                ? "text-gray-400"
+                                : "text-gray-500"
+                            } ml-11">
                                 Status: ${statusText}
                             </p>
                         </div>
@@ -442,74 +645,87 @@
                     </div>
                 </div>
             `;
-        }
+      }
 
-        // Update progress bar
-        function updateProgress(studyData) {
-            const totalSteps = 7; // 3 forms + 3 NASA-TLX + 1 interview
-            let completedSteps = 0;
+      // Update progress bar
+      function updateProgress(studyData) {
+        const totalSteps = 7; // 3 forms + 3 NASA-TLX + 1 interview
+        let completedSteps = 0;
 
-            Object.values(studyData.status).forEach(task => {
-                if (task.status === 'complete') completedSteps++;
-            });
-
-            const progressPercent = (completedSteps / totalSteps) * 100;
-            document.getElementById('progressBar').style.width = progressPercent + '%';
-            document.getElementById('progressText').textContent = `Step ${completedSteps} of ${totalSteps} completed`;
-        }
-
-        // Check for existing session on page load
-document.addEventListener('DOMContentLoaded', function() {
-    const studyData = JSON.parse(localStorage.getItem('formStudyData') || '{}');
-    
-    if (studyData.participantId) {
-        // Check and update completion status from localStorage
-        updateCompletionStatus(studyData);
-        
-        // Resume existing session
-        initializeStudyProgress(studyData);
-    }
-});
-
-// Check completion status from various localStorage keys
-function updateCompletionStatus(studyData) {
-    // Check variant completions from logs
-    ['A', 'B', 'C'].forEach(variant => {
-        const logs = JSON.parse(localStorage.getItem(`logs_${variant}`) || '{}');
-        if (logs[studyData.participantId]) {
-            studyData.status[variant] = { status: 'complete' };
-        }
-    });
-    
-    // Check NASA-TLX completions
-    ['A', 'B', 'C'].forEach(variant => {
-        const nasaData = JSON.parse(localStorage.getItem(`nasa_tlx_${variant}`) || '{}');
-        if (nasaData[studyData.participantId]) {
-            studyData.status[`nasa_${variant.toLowerCase()}`] = { status: 'complete' };
-        }
-    });
-    
-    // Check interview completion
-    const interviews = JSON.parse(localStorage.getItem('interviews') || '{}');
-    if (interviews[studyData.participantId]) {
-        studyData.status.interview = { status: 'complete' };
-    }
-    
-    // Save updated status
-    localStorage.setItem('formStudyData', JSON.stringify(studyData));
-}
-
-        // Allow Enter key to submit participant ID
-        document.addEventListener('DOMContentLoaded', function() {
-            const input = document.getElementById('participantIdInput');
-            if (input) {
-                input.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') {
-                        validateAndStart();
-                    }
-                });
-            }
+        Object.values(studyData.status).forEach((task) => {
+          if (task.status === "complete") completedSteps++;
         });
+
+        const progressPercent = (completedSteps / totalSteps) * 100;
+        document.getElementById("progressBar").style.width =
+          progressPercent + "%";
+        document.getElementById(
+          "progressText"
+        ).textContent = `Step ${completedSteps} of ${totalSteps} completed`;
+      }
+
+      // Check for existing session on page load
+      document.addEventListener("DOMContentLoaded", function () {
+        const studyData = JSON.parse(
+          localStorage.getItem("formStudyData") || "{}"
+        );
+
+        if (studyData.participantId) {
+          // Check and update completion status from localStorage
+          updateCompletionStatus(studyData);
+
+          // Resume existing session
+          initializeStudyProgress(studyData);
+        }
+      });
+
+      // Check completion status from various localStorage keys
+      function updateCompletionStatus(studyData) {
+        // Check variant completions from logs
+        ["A", "B", "C"].forEach((variant) => {
+          const logs = JSON.parse(
+            localStorage.getItem(`logs_${variant}`) || "{}"
+          );
+          if (logs[studyData.participantId]) {
+            studyData.status[variant] = { status: "complete" };
+          }
+        });
+
+        // Check NASA-TLX completions
+        ["A", "B", "C"].forEach((variant) => {
+          const nasaData = JSON.parse(
+            localStorage.getItem(`nasa_tlx_${variant}`) || "{}"
+          );
+          if (nasaData[studyData.participantId]) {
+            studyData.status[`nasa_${variant.toLowerCase()}`] = {
+              status: "complete",
+            };
+          }
+        });
+
+        // Check interview completion
+        const interviews = JSON.parse(
+          localStorage.getItem("interviews") || "{}"
+        );
+        if (interviews[studyData.participantId]) {
+          studyData.status.interview = { status: "complete" };
+        }
+
+        // Save updated status
+        localStorage.setItem("formStudyData", JSON.stringify(studyData));
+      }
+
+      // Allow Enter key to submit participant ID
+      document.addEventListener("DOMContentLoaded", function () {
+        const input = document.getElementById("participantIdInput");
+        if (input) {
+          input.addEventListener("keypress", function (e) {
+            if (e.key === "Enter") {
+              validateAndStart();
+            }
+          });
+        }
+      });
     </script>
-</body>
+  </body>
 </html>
