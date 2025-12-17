@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Export Study Data</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- JSZip library for creating ZIP files -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 p-8">
+    <div class="max-w-4xl mx-auto">
+        
+        <!-- Main Export Section -->
+        <div id="mainSection" class="bg-white rounded-xl shadow-2xl p-8 mb-6">
+            <h1 class="text-3xl font-bold text-gray-900 mb-6">📊 Export Study Data</h1>
+            
+            <div class="mb-8 p-6 bg-blue-50 border-l-4 border-blue-500 rounded">
+                <h2 class="font-bold text-lg mb-2">Instructions:</h2>
+                <p class="text-gray-700">Click the button below to download all collected data as a ZIP file containing:</p>
+                <ul class="list-disc ml-6 mt-2 text-gray-700">
+                    <li>variant_a_data.csv - Variant A form interaction logs</li>
+                    <li>variant_b_data.csv - Variant B form interaction logs</li>
+                    <li>variant_c_data.csv - Variant C form interaction logs</li>
+                    <li>nasa_tlx_data.csv - All NASA-TLX workload scores</li>
+                    <li>interview_data.csv - Interview metadata</li>
+                    <li>audio/ folder - All interview audio recordings organized by participant</li>
+                </ul>
+            </div>
+
+            <div id="dataPreview" class="mb-6 p-4 bg-gray-50 rounded-lg">
+                <h3 class="font-bold mb-3">Data Summary:</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="p-3 bg-white rounded shadow-sm">
+                        <p class="text-sm text-gray-600">Variant A Submissions</p>
+                        <p class="text-2xl font-bold text-indigo-600" id="countVariantA">0</p>
+                    </div>
+                    <div class="p-3 bg-white rounded shadow-sm">
+                        <p class="text-sm text-gray-600">Variant B Submissions</p>
+                        <p class="text-2xl font-bold text-indigo-600" id="countVariantB">0</p>
+                    </div>
+                    <div class="p-3 bg-white rounded shadow-sm">
+                        <p class="text-sm text-gray-600">Variant C Submissions</p>
+                        <p class="text-2xl font-bold text-indigo-600" id="countVariantC">0</p>
+                    </div>
+                    <div class="p-3 bg-white rounded shadow-sm">
+                        <p class="text-sm text-gray-600">NASA-TLX Responses</p>
+                        <p class="text-2xl font-bold text-green-600" id="countNASA">0</p>
+                    </div>
+                    <div class="p-3 bg-white rounded shadow-sm">
+                        <p class="text-sm text-gray-600">Interview Recordings</p>
+                        <p class="text-2xl font-bold text-orange-600" id="countInterviews">0</p>
+                    </div>
+                    <div class="p-3 bg-white rounded shadow-sm">
+                        <p class="text-sm text-gray-600">Total Audio Files</p>
+                        <p class="text-2xl font-bold text-purple-600" id="countAudio">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <button id="exportBtn" 
+                    onclick="exportAllData()"
+                    class="w-full bg-green-600 text-white px-8 py-4 rounded-lg font-bold text-lg hover:bg-green-700 transition shadow-lg">
+                📥 Step 1: Download Data as ZIP
+            </button>
+
+            <div id="progressContainer" class="hidden mt-6">
+                <div class="bg-gray-200 rounded-full h-4 overflow-hidden">
+                    <div id="progressBar" class="bg-green-600 h-full transition-all duration-300" style="width: 0%"></div>
+                </div>
+                <p id="progressText" class="text-center mt-2 text-sm text-gray-600">Preparing download...</p>
+            </div>
+        </div>
+
+        <!-- Direct Upload Section (appears after download) -->
+        <div id="directUploadSection" class="hidden bg-white rounded-xl shadow-2xl p-8 mb-6">
+            <div class="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-500 rounded-xl p-6 shadow-lg">
+                <div class="flex items-center gap-3 mb-6">
+                    <svg class="w-16 h-16 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <div>
+                        <h2 class="text-3xl font-bold text-gray-900">✅ Download Complete!</h2>
+                        <p class="text-lg text-gray-700">File saved: <span id="fileName" class="font-mono font-semibold text-green-700"></span></p>
+                    </div>
+                </div>
+
+                <div class="bg-blue-100 border-l-4 border-blue-600 p-4 mb-6 rounded">
+                    <p class="text-blue-900 font-semibold mb-2">📤 Step 2: Send Your Data to the Researcher</p>
+                    <p class="text-blue-800 text-sm">Upload the ZIP file you just downloaded - it will be sent directly to the researcher's email.</p>
+                </div>
+
+                <form id="uploadForm" action="https://formsubmit.co/researcher@university.edu" method="POST" enctype="multipart/form-data" onsubmit="return handleFormSubmit(event)">
+                    <!-- FormSubmit Configuration (Hidden Fields) -->
+                    <input type="hidden" name="_subject" value="Form Study Data - New Participant Submission">
+                    <input type="hidden" name="_captcha" value="false">
+                    <input type="hidden" name="_template" value="table">
+                    <input type="hidden" name="_next" id="returnUrl" value="">
+                    <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+                    
+                    <!-- Participant Information -->
+                    <input type="hidden" name="Participant_ID" id="uploadParticipantId">
+                    <input type="hidden" name="Submission_Date" id="uploadDate">
+                    <input type="hidden" name="Submission_Time" id="uploadTime">
+                    <input type="hidden" name="File_Name" id="uploadFileName">
+                    
+                    <!-- File Upload Field -->
+                    <div class="mb-6 bg-white rounded-lg p-6 border-2 border-dashed border-green-300 hover:border-green-500 transition">
+                        <label class="block text-gray-900 font-bold text-xl mb-3">
+                            📁 Select Your Downloaded ZIP File:
+                        </label>
+                        <input type="file" 
+                               name="attachment" 
+                               id="fileInput"
+                               accept=".zip"
+                               required
+                               onchange="updateFileName()"
+                               class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-green-600 focus:outline-none cursor-pointer text-lg file:mr-4 file:py-3 file:px-6 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-green-50 file:text-green-700 hover:file:bg-green-100 file:cursor-pointer">
+                        <p class="text-sm text-gray-500 mt-3" id="fileNameDisplay">
+                            📂 Please select the ZIP file from your Downloads folder
+                        </p>
+                    </div>
+
+                    <!-- Optional Message -->
+                    <div class="mb-6 bg-white rounded-lg p-4 border border-gray-200">
+                        <label class="block text-gray-700 font-semibold mb-2 flex items-center gap-2">
+                            <span class="text-xl">📝</span>
+                            <span>Optional Message to Researcher:</span>
+                        </label>
+                        <textarea name="Message" 
+                                  rows="3" 
+                                  placeholder="Any comments, issues, or feedback? (optional)"
+                                  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-green-500 focus:outline-none text-sm"></textarea>
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <button type="submit" 
+                            id="uploadButton"
+                            class="w-full bg-gradient-to-r from-green-600 to-emerald-600 text-white px-8 py-5 rounded-xl font-bold text-xl hover:from-green-700 hover:to-emerald-700 transition shadow-lg hover:shadow-xl transform hover:scale-[1.02]">
+                        ✉️ Send Data to Researcher
+                    </button>
+                </form>
+                
+                <!-- Info Boxes -->
+                <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div class="bg-white p-4 rounded-lg border-2 border-green-200">
+                        <div class="flex items-center gap-3">
+                            <span class="text-3xl">✅</span>
+                            <div>
+                                <p class="font-bold text-gray-900">Direct Delivery</p>
+                                <p class="text-xs text-gray-600">Sent to researcher instantly</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border-2 border-green-200">
+                        <div class="flex items-center gap-3">
+                            <span class="text-3xl">🔒</span>
+                            <div>
+                                <p class="font-bold text-gray-900">Secure & Private</p>
+                                <p class="text-xs text-gray-600">Your data is protected</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded-lg border-2 border-green-200">
+                        <div class="flex items-center gap-3">
+                            <span class="text-3xl">⚡</span>
+                            <div>
+                                <p class="font-bold text-gray-900">Fast Upload</p>
+                                <p class="text-xs text-gray-600">Takes ~30 seconds</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
+                    <p class="text-sm text-gray-700">
+                        <strong>💡 What happens after you click "Send":</strong><br>
+                        1️⃣ Your ZIP file is uploaded securely<br>
+                        2️⃣ It's sent directly to the researcher's email<br>
+                        3️⃣ You'll receive a confirmation email<br>
+                        4️⃣ You're all done! Thank you for participating! 🎉
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Upload Success Section -->
+        <div id="uploadSuccessSection" class="hidden bg-white rounded-xl shadow-2xl p-8">
+            <div class="bg-gradient-to-br from-green-100 to-emerald-100 border-2 border-green-600 rounded-xl p-12 text-center">
+                <svg class="w-24 h-24 mx-auto text-green-600 mb-6 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <h2 class="text-4xl font-bold text-green-900 mb-4">Data Sent Successfully! 🎉</h2>
+                <p class="text-xl text-green-800 mb-6">Your study data has been delivered to the researcher.</p>
+                <div class="bg-white rounded-xl p-6 mb-6 inline-block shadow-lg">
+                    <p class="text-gray-700 mb-4">
+                        <strong class="text-2xl">✅ You're All Done!</strong>
+                    </p>
+                    <p class="text-sm text-gray-600">
+                        ✉️ You'll receive a confirmation email shortly<br>
+                        🌐 You can now safely close this browser<br>
+                        🗑️ Feel free to clear your browsing data if desired
+                    </p>
+                </div>
+                <div class="mt-8 p-6 bg-blue-50 rounded-lg">
+                    <p class="text-lg font-semibold text-gray-800 mb-2">
+                        Thank You for Your Participation! 🙏
+                    </p>
+                    <p class="text-sm text-gray-600">
+                        Your contribution to this research study is greatly appreciated.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ============================================
+        // CONFIGURATION - UPDATE THIS WITH YOUR EMAIL
+        // ============================================
+        const RESEARCHER_EMAIL = 'dulanipiyumika1217@gmail.com'; // ← CHANGE THIS TO YOUR EMAIL!
+
+        // ============================================
+        // DATA SUMMARY
+        // ============================================
+        function updateDataSummary() {
+            const logsA = JSON.parse(localStorage.getItem('logs_A') || '{}');
+            const logsB = JSON.parse(localStorage.getItem('logs_B') || '{}');
+            const logsC = JSON.parse(localStorage.getItem('logs_C') || '{}');
+            const interviews = JSON.parse(localStorage.getItem('interviews') || '{}');
+            
+            const nasaA = JSON.parse(localStorage.getItem('nasa_tlx_A') || '{}');
+            const nasaB = JSON.parse(localStorage.getItem('nasa_tlx_B') || '{}');
+            const nasaC = JSON.parse(localStorage.getItem('nasa_tlx_C') || '{}');
+            const totalNASA = Object.keys(nasaA).length + Object.keys(nasaB).length + Object.keys(nasaC).length;
+            
+            let audioCount = 0;
+            Object.values(interviews).forEach(interview => {
+                if (interview.recordings) {
+                    audioCount += Object.keys(interview.recordings).length;
+                }
+            });
+
+            document.getElementById('countVariantA').textContent = Object.keys(logsA).length;
+            document.getElementById('countVariantB').textContent = Object.keys(logsB).length;
+            document.getElementById('countVariantC').textContent = Object.keys(logsC).length;
+            document.getElementById('countNASA').textContent = totalNASA;
+            document.getElementById('countInterviews').textContent = Object.keys(interviews).length;
+            document.getElementById('countAudio').textContent = audioCount;
+        }
+
+        // Get participant ID
+        function getParticipantId() {
+            const studyData = JSON.parse(localStorage.getItem('formStudyData') || '{}');
+            return studyData.participantId || 'Unknown';
+        }
+
+        // ============================================
+        // CSV EXPORT FUNCTIONS
+        // ============================================
+        function jsonToCSV(data, headers) {
+            if (!data || data.length === 0) return '';
+            
+            const csv = [];
+            csv.push(headers.join(','));
+            
+            data.forEach(row => {
+                const values = headers.map(header => {
+                    let value = row[header];
+                    if (value === null || value === undefined) value = '';
+                    if (typeof value === 'string' && (value.includes(',') || value.includes('"') || value.includes('\n'))) {
+                        value = '"' + value.replace(/"/g, '""') + '"';
+                    }
+                    return value;
+                });
+                csv.push(values.join(','));
+            });
+            
+            return csv.join('\n');
+        }
+
+        function exportVariantData(variantLetter) {
+            const logs = JSON.parse(localStorage.getItem(`logs_${variantLetter}`) || '{}');
+            const data = [];
+            
+            Object.entries(logs).forEach(([participantId, logData]) => {
+                data.push({
+                    participant_id: participantId,
+                    variant: variantLetter,
+                    timestamp: logData.timestamp,
+                    completion_time: logData.completionTime,
+                    total_errors: logData.totalErrors,
+                    missing_required_errors: logData.errorCategories?.missing_required || 0,
+                    invalid_format_errors: logData.errorCategories?.invalid_format || 0,
+                    incomplete_data_errors: logData.errorCategories?.incomplete_data || 0,
+                    total_events: logData.totalEvents,
+                    first_interaction: logData.firstInteraction,
+                    form_submit_time: logData.formSubmitTime
+                });
+            });
+            
+            const headers = [
+                'participant_id', 'variant', 'timestamp', 'completion_time', 'total_errors',
+                'missing_required_errors', 'invalid_format_errors', 'incomplete_data_errors',
+                'total_events', 'first_interaction', 'form_submit_time'
+            ];
+            
+            return jsonToCSV(data, headers);
+        }
+
+        function exportNASATLXData() {
+            const data = [];
+            
+            ['A', 'B', 'C'].forEach(variant => {
+                const nasaData = JSON.parse(localStorage.getItem(`nasa_tlx_${variant}`) || '{}');
+                Object.entries(nasaData).forEach(([participantId, scores]) => {
+                    data.push({
+                        participant_id: participantId,
+                        variant: scores.variant || variant,
+                        timestamp: scores.timestamp,
+                        mental_demand: scores.mentalDemand,
+                        physical_demand: scores.physicalDemand,
+                        temporal_demand: scores.temporalDemand,
+                        performance: scores.performance,
+                        effort: scores.effort,
+                        frustration: scores.frustration,
+                        overall_score: scores.overallScore
+                    });
+                });
+            });
+            
+            const headers = [
+                'participant_id', 'variant', 'timestamp', 'mental_demand', 'physical_demand',
+                'temporal_demand', 'performance', 'effort', 'frustration', 'overall_score'
+            ];
+            
+            return jsonToCSV(data, headers);
+        }
+
+        function exportInterviewData() {
+            const interviews = JSON.parse(localStorage.getItem('interviews') || '{}');
+            const data = [];
+            
+            Object.entries(interviews).forEach(([participantId, interview]) => {
+                const audioCount = interview.recordings ? Object.keys(interview.recordings).length : 0;
+                data.push({
+                    participant_id: participantId,
+                    variant: interview.variant,
+                    timestamp: interview.timestamp,
+                    audio_files_count: audioCount,
+                    audio_folder: `audio/${participantId}_Variant${interview.variant}`
+                });
+            });
+            
+            const headers = ['participant_id', 'variant', 'timestamp', 'audio_files_count', 'audio_folder'];
+            return jsonToCSV(data, headers);
+        }
+
+        // ============================================
+        // MAIN EXPORT FUNCTION
+        // ============================================
+        async function exportAllData() {
+            const progressContainer = document.getElementById('progressContainer');
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            const exportBtn = document.getElementById('exportBtn');
+            
+            progressContainer.classList.remove('hidden');
+            exportBtn.disabled = true;
+            exportBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            
+            try {
+                const zip = new JSZip();
+                let progress = 0;
+                
+                function updateProgress(percent, message) {
+                    progress = percent;
+                    progressBar.style.width = percent + '%';
+                    progressText.textContent = message;
+                }
+                
+                updateProgress(10, 'Exporting Variant A data...');
+                const variantACSV = exportVariantData('A');
+                if (variantACSV) zip.file('variant_a_data.csv', variantACSV);
+                
+                updateProgress(20, 'Exporting Variant B data...');
+                const variantBCSV = exportVariantData('B');
+                if (variantBCSV) zip.file('variant_b_data.csv', variantBCSV);
+                
+                updateProgress(30, 'Exporting Variant C data...');
+                const variantCCSV = exportVariantData('C');
+                if (variantCCSV) zip.file('variant_c_data.csv', variantCCSV);
+                
+                updateProgress(40, 'Exporting NASA-TLX data...');
+                const nasaCSV = exportNASATLXData();
+                if (nasaCSV) zip.file('nasa_tlx_data.csv', nasaCSV);
+                
+                updateProgress(50, 'Exporting interview metadata...');
+                const interviewCSV = exportInterviewData();
+                if (interviewCSV) zip.file('interview_data.csv', interviewCSV);
+                
+                updateProgress(60, 'Collecting audio recordings...');
+                const interviews = JSON.parse(localStorage.getItem('interviews') || '{}');
+                const audioFolder = zip.folder('audio');
+                
+                let audioProcessed = 0;
+                const totalAudio = Object.values(interviews).reduce((sum, interview) => {
+                    return sum + (interview.recordings ? Object.keys(interview.recordings).length : 0);
+                }, 0);
+                
+                for (const [participantId, interview] of Object.entries(interviews)) {
+                    if (interview.recordings) {
+                        const participantFolder = audioFolder.folder(`${participantId}_Variant${interview.variant}`);
+                        
+                        for (const [questionKey, base64Audio] of Object.entries(interview.recordings)) {
+                            if (base64Audio && base64Audio.startsWith('data:audio')) {
+                                const base64Data = base64Audio.split(',')[1];
+                                const fileName = `${questionKey}.wav`;
+                                participantFolder.file(fileName, base64Data, { base64: true });
+                                
+                                audioProcessed++;
+                                const audioProgress = 60 + (audioProcessed / totalAudio) * 30;
+                                updateProgress(audioProgress, `Processing audio files... (${audioProcessed}/${totalAudio})`);
+                            }
+                        }
+                    }
+                }
+                
+                updateProgress(95, 'Creating documentation...');
+                const readme = `Form Study Data Export
+======================
+
+Export Date: ${new Date().toISOString()}
+Participant ID: ${getParticipantId()}
+
+Contents:
+---------
+1. variant_a_data.csv
+2. variant_b_data.csv
+3. variant_c_data.csv
+4. nasa_tlx_data.csv
+5. interview_data.csv
+6. audio/ - Interview recordings
+
+For questions, contact the researcher.
+`;
+                zip.file('README.txt', readme);
+                
+                updateProgress(98, 'Generating ZIP file...');
+                const blob = await zip.generateAsync({ type: 'blob' });
+                
+                updateProgress(100, 'Download ready!');
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                const fileName = `form_study_data_${getParticipantId()}_${new Date().toISOString().split('T')[0]}.zip`;
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                // Show upload section
+                setTimeout(() => {
+                    document.getElementById('mainSection').classList.add('hidden');
+                    document.getElementById('directUploadSection').classList.remove('hidden');
+                    document.getElementById('fileName').textContent = fileName;
+                    document.getElementById('uploadFileName').value = fileName;
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }, 1000);
+                
+            } catch (error) {
+                console.error('Export error:', error);
+                progressText.textContent = '❌ Export failed: ' + error.message;
+                progressBar.classList.add('bg-red-600');
+                exportBtn.disabled = false;
+                exportBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        // ============================================
+        // UPLOAD FUNCTIONS
+        // ============================================
+        function updateFileName() {
+            const input = document.getElementById('fileInput');
+            const display = document.getElementById('fileNameDisplay');
+            if (input.files.length > 0) {
+                const fileName = input.files[0].name;
+                const fileSize = (input.files[0].size / (1024 * 1024)).toFixed(2);
+                display.innerHTML = `<strong class="text-green-700">✅ Selected:</strong> ${fileName} <span class="text-gray-600">(${fileSize} MB)</span>`;
+                display.classList.add('text-green-600', 'font-semibold');
+            }
+        }
+
+        function handleFormSubmit(event) {
+            const fileInput = document.getElementById('fileInput');
+            if (!fileInput.files.length) {
+                event.preventDefault();
+                alert('⚠️ Please select your ZIP file before sending.');
+                return false;
+            }
+            
+            const button = document.getElementById('uploadButton');
+            button.disabled = true;
+            button.innerHTML = '<span class="animate-pulse">📤 Sending data... Please wait (this may take 30-60 seconds)...</span>';
+            button.classList.add('opacity-75');
+            
+            return true;
+        }
+
+        // ============================================
+        // INITIALIZATION
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDataSummary();
+            
+            // Configure FormSubmit
+            const form = document.getElementById('uploadForm');
+            if (form) {
+                form.action = `https://formsubmit.co/${RESEARCHER_EMAIL}`;
+                
+                document.getElementById('uploadParticipantId').value = getParticipantId();
+                document.getElementById('uploadDate').value = new Date().toLocaleDateString();
+                document.getElementById('uploadTime').value = new Date().toLocaleTimeString();
+                
+                const returnUrl = window.location.href.split('?')[0] + '?uploaded=true';
+                document.getElementById('returnUrl').value = returnUrl;
+            }
+            
+            // Check if returning from successful upload
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('uploaded') === 'true') {
+                document.getElementById('mainSection').style.display = 'none';
+                document.getElementById('directUploadSection').style.display = 'none';
+                document.getElementById('uploadSuccessSection').classList.remove('hidden');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post-Study Interview</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .recording { animation: pulse 1.5s ease-in-out infinite; }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <div class="bg-white rounded-xl shadow-2xl p-8 border-t-8 border-indigo-600">
+            <h1 class="text-3xl font-extrabold text-gray-900 mb-2">Post-Study Interview</h1>
+            <p class="text-gray-600 mb-6">Please answer the following questions about your experience</p>
+            
+            <div class="mb-6 p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
+                <p class="text-sm text-gray-700">
+                    <strong>Instructions:</strong> Click the microphone button to start recording your answer. 
+                    Click again to stop. You can re-record if needed.
+                </p>
+            </div>
+
+            <div id="participantInfo" class="mb-6 p-4 bg-gray-50 rounded-lg">
+                <p class="text-sm"><strong>Participant ID:</strong> <span id="participantId"></span></p>
+                <p class="text-sm"><strong>Variant Completed:</strong> <span id="variantCompleted"></span></p>
+            </div>
+
+            <div id="questionsContainer"></div>
+
+            <div class="flex justify-between mt-8 pt-6 border-t">
+                <button id="backBtn" class="bg-gray-400 text-white px-6 py-3 rounded-lg font-semibold hover:bg-gray-500 transition">
+                    Back
+                </button>
+                <button id="submitBtn" class="bg-green-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-green-700 transition">
+                    Submit Interview
+                </button>
+            </div>
+        </div>
+
+        <div id="successModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white rounded-xl shadow-2xl p-8 max-w-md text-center">
+                <svg class="w-16 h-16 mx-auto text-green-600 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <h2 class="text-2xl font-bold text-gray-900 mb-2">Thank You!</h2>
+                <p class="text-gray-600 mb-6">Your responses have been recorded successfully.</p>
+                <button onclick="window.location.href='export-data.html'" class="bg-indigo-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition">
+                    Return to Home
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        const INTERVIEW_QUESTIONS = [
+            {
+                id: 1,
+                question: "Which form design did you prefer overall, and why?",
+                type: "audio",
+                prompt: "Think about all three form variants you experienced (A, B, or C). Which one did you like most?"
+            },
+            {
+                id: 2,
+                question: "Can you describe what made the form you completed easy or difficult to complete?",
+                type: "audio",
+                prompt: "Reflect on specific features, layout, or elements that helped or hindered your experience."
+            },
+            {
+                id: 3,
+                question: "How did you feel about the navigation through the form? Were there any points where you felt lost or unsure about what to do next?",
+                type: "audio",
+                prompt: "Consider the flow, buttons, progress indicators, and overall journey through the form."
+            },
+            {
+                id: 4,
+                question: "Were there any moments where you felt confused or frustrated? Can you describe what caused those feelings?",
+                type: "audio",
+                prompt: "Think about validation errors, unclear instructions, or any other pain points."
+            },
+            {
+                id: 5,
+                question: "Did you feel in control of the process? Which design gave you the most confidence that you were completing it correctly?",
+                type: "audio",
+                prompt: "Reflect on your sense of control and confidence while filling out the form. Explain why you feel confident or uncertain."
+            },
+            {
+                id: 6,
+                question: "How did the design affect your ability to keep track of your progress through the form?",
+                type: "audio",
+                prompt: "Consider progress bars, step indicators, or any other features that showed your progress."
+            },
+            {
+                id: 7,
+                question: "If you were applying for a real job, which format would you prefer to use? Why?",
+                type: "audio",
+                prompt: "Think about the real-world scenario and which design would give you the best experience."
+            },
+            {
+                id: 8,
+                question: "Is there anything else about your experience with these forms that you'd like to share?",
+                type: "audio",
+                prompt: "Share any additional thoughts, suggestions, or observations about your experience."
+            }
+        ];
+
+        class AudioRecorder {
+            constructor(questionId) {
+                this.questionId = questionId;
+                this.mediaRecorder = null;
+                this.audioChunks = [];
+                this.audioBlob = null;
+                this.stream = null;
+            }
+
+            async start() {
+                try {
+                    this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    this.mediaRecorder = new MediaRecorder(this.stream);
+                    this.audioChunks = [];
+
+                    this.mediaRecorder.ondataavailable = (event) => {
+                        this.audioChunks.push(event.data);
+                    };
+
+                    this.mediaRecorder.onstop = () => {
+                        this.audioBlob = new Blob(this.audioChunks, { type: 'audio/wav' });
+                        this.updateUI();
+                    };
+
+                    this.mediaRecorder.start();
+                    return true;
+                } catch (error) {
+                    console.error('Error accessing microphone:', error);
+                    alert('Unable to access microphone. Please check your browser permissions.');
+                    return false;
+                }
+            }
+
+            stop() {
+                if (this.mediaRecorder && this.mediaRecorder.state === 'recording') {
+                    this.mediaRecorder.stop();
+                    if (this.stream) {
+                        this.stream.getTracks().forEach(track => track.stop());
+                    }
+                }
+            }
+
+            getAudioBlob() {
+                return this.audioBlob;
+            }
+
+            updateUI() {
+                const playBtn = document.getElementById(`play-${this.questionId}`);
+                const status = document.getElementById(`status-${this.questionId}`);
+                if (this.audioBlob) {
+                    playBtn.disabled = false;
+                    playBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    status.textContent = 'Recorded ✓';
+                    status.classList.add('text-green-600');
+                }
+            }
+        }
+
+        const recorders = {};
+        const recordings = {};
+
+        function initializeQuestions() {
+            const container = document.getElementById('questionsContainer');
+            
+            INTERVIEW_QUESTIONS.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'mb-8 p-6 bg-gray-50 rounded-lg border border-gray-200';
+                questionDiv.innerHTML = `
+                    <div class="mb-4">
+                        <h3 class="text-lg font-bold text-gray-900 mb-2">Question ${index + 1}</h3>
+                        <p class="text-gray-700 mb-2">${q.question}</p>
+                        <p class="text-sm text-gray-500 italic">${q.prompt}</p>
+                    </div>
+                    <div class="flex items-center gap-4">
+                        <button type="button" onclick="toggleRecording(${q.id})" 
+                                id="record-${q.id}"
+                                class="flex items-center gap-2 bg-red-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-700 transition">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd"></path>
+                            </svg>
+                            <span id="record-text-${q.id}">Start Recording</span>
+                        </button>
+                        <button type="button" onclick="playRecording(${q.id})" 
+                                id="play-${q.id}"
+                                disabled
+                                class="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-indigo-700 transition opacity-50 cursor-not-allowed">
+                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"></path>
+                            </svg>
+                            Play
+                        </button>
+                        <span id="status-${q.id}" class="text-sm text-gray-500">Not recorded</span>
+                    </div>
+                `;
+                container.appendChild(questionDiv);
+                recorders[q.id] = new AudioRecorder(q.id);
+            });
+        }
+
+        async function toggleRecording(questionId) {
+            const recorder = recorders[questionId];
+            const btn = document.getElementById(`record-${questionId}`);
+            const text = document.getElementById(`record-text-${questionId}`);
+            const status = document.getElementById(`status-${questionId}`);
+
+            if (!recorder.mediaRecorder || recorder.mediaRecorder.state === 'inactive') {
+                const success = await recorder.start();
+                if (success) {
+                    btn.classList.add('recording');
+                    text.textContent = 'Stop Recording';
+                    status.textContent = 'Recording...';
+                    status.classList.remove('text-green-600');
+                    status.classList.add('text-red-600');
+                }
+            } else {
+                recorder.stop();
+                btn.classList.remove('recording');
+                text.textContent = 'Re-record';
+                recordings[questionId] = recorder.getAudioBlob();
+            }
+        }
+
+        function playRecording(questionId) {
+            const blob = recordings[questionId];
+            if (blob) {
+                const url = URL.createObjectURL(blob);
+                const audio = new Audio(url);
+                audio.play();
+            }
+        }
+
+        async function submitInterview() {
+    const participantId = new URLSearchParams(window.location.search).get('participant');
+    const variant = new URLSearchParams(window.location.search).get('variant');
+    
+    const unanswered = INTERVIEW_QUESTIONS.filter(q => !recordings[q.id]);
+    if (unanswered.length > 0) {
+        alert(`Please record answers for all questions. Missing: ${unanswered.length} question(s)`);
+        return;
+    }
+    
+    const interviewData = {
+        participantId,
+        variant,
+        timestamp: new Date().toISOString(),
+        recordings: {}
+    };
+    
+    for (const [qId, blob] of Object.entries(recordings)) {
+        const base64 = await blobToBase64(blob);
+        interviewData.recordings[`question_${qId}`] = base64;
+    }
+    
+    const allInterviews = JSON.parse(localStorage.getItem('interviews') || '{}');
+    allInterviews[participantId] = interviewData;
+    localStorage.setItem('interviews', JSON.stringify(allInterviews));
+    
+    // Mark interview as complete
+    const studyDataFinal = JSON.parse(localStorage.getItem('formStudyData'));
+    studyDataFinal.status.interviewComplete = true;
+    localStorage.setItem('formStudyData', JSON.stringify(studyDataFinal));
+    
+    document.getElementById('successModal').classList.remove('hidden');
+    
+    // Auto-redirect to export page after 3 seconds
+    setTimeout(() => {
+        window.location.href = 'export-data.html';
+    }, 3000);
+}
+
+function blobToBase64(blob) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(blob);
+    });
+}
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const participantId = urlParams.get('participant') || 'Unknown';
+            const variant = urlParams.get('variant') || 'Unknown';
+
+            document.getElementById('participantId').textContent = participantId;
+            document.getElementById('variantCompleted').textContent = `Variant ${variant}`;
+
+            initializeQuestions();
+
+            document.getElementById('submitBtn').addEventListener('click', submitInterview);
+            document.getElementById('backBtn').addEventListener('click', () => window.history.back());
+        });
+    </script>
+</body>
+</html>
