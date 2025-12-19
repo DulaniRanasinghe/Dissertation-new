@@ -94,10 +94,13 @@
                         <div class="flex-1">
                             <h4 class="font-bold text-2xl text-gray-900 mb-4">Upload to Google Drive</h4>
                             
-                            <button onclick="openDriveUpload()" 
-                                    class="w-full bg-blue-600 text-white px-8 py-6 rounded-xl font-bold text-2xl hover:bg-blue-700 transition shadow-lg hover:shadow-xl transform hover:scale-[1.02] mb-6">
+                            <!-- Direct link instead of button to avoid popup blocker -->
+                            <a href="https://drive.google.com/drive/folders/1YrwxScyDKWk0gJItd_hjykW9sLc6sKE5?usp=drive_link" 
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               class="block w-full bg-blue-600 text-white px-8 py-6 rounded-xl font-bold text-2xl hover:bg-blue-700 transition shadow-lg hover:shadow-xl transform hover:scale-[1.02] mb-6 text-center">
                                 📁 Open Upload Folder
-                            </button>
+                            </a>
 
                             <div class="bg-blue-50 rounded-lg p-6">
                                 <p class="font-bold text-lg text-gray-900 mb-4">📝 Follow these steps:</p>
@@ -200,6 +203,11 @@
                         🙏 Thank you for participating in this research study!
                     </p>
                 </div>
+                
+                <button onclick="window.location.href='index.html'" 
+                        class="bg-indigo-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition">
+                    Return to Home
+                </button>
             </div>
         </div>
 
@@ -210,7 +218,6 @@
         // CONFIGURATION
         // ============================================
         const GOOGLE_DRIVE_FOLDER_URL = 'https://drive.google.com/drive/folders/1YrwxScyDKWk0gJItd_hjykW9sLc6sKE5?usp=sharing';
-        // ← REPLACE with your Google Drive folder link!
 
         // ============================================
         // DATA SUMMARY
@@ -552,6 +559,9 @@ For questions, contact the researcher.
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
                 
+                // Mark export as complete
+                markExportComplete();
+                
                 setTimeout(() => {
                     document.getElementById('mainSection').classList.add('hidden');
                     document.getElementById('directUploadSection').classList.remove('hidden');
@@ -570,19 +580,49 @@ For questions, contact the researcher.
         }
 
         // ============================================
-        // GOOGLE DRIVE UPLOAD FUNCTIONS
+        // COMPLETION TRACKING
         // ============================================
-        function openDriveUpload() {
-            window.open(GOOGLE_DRIVE_FOLDER_URL, '_blank');
-            setTimeout(() => {
-                const fileName = document.getElementById('fileName').textContent;
-                alert('📁 Google Drive Opened!\n\nRemember to:\n1. Click "New" → "File upload"\n2. Select: ' + fileName + '\n3. Wait for upload complete\n4. Return here and click "I\'ve Uploaded"');
-            }, 2000);
+        function markExportComplete() {
+            try {
+                const studyData = JSON.parse(localStorage.getItem('formStudyData') || '{}');
+                if (!studyData.status) {
+                    studyData.status = {};
+                }
+                studyData.status.dataExported = true;
+                studyData.status.exportTimestamp = new Date().toISOString();
+                localStorage.setItem('formStudyData', JSON.stringify(studyData));
+                console.log('✅ Export marked as complete');
+            } catch (error) {
+                console.error('Error marking export complete:', error);
+            }
         }
 
+        function markUploadComplete() {
+            try {
+                const studyData = JSON.parse(localStorage.getItem('formStudyData') || '{}');
+                if (!studyData.status) {
+                    studyData.status = {};
+                }
+                studyData.status.dataUploaded = true;
+                studyData.status.uploadTimestamp = new Date().toISOString();
+                studyData.status.studyComplete = true; // 🔥 THIS IS THE KEY FLAG!
+                localStorage.setItem('formStudyData', JSON.stringify(studyData));
+                console.log('✅ Upload marked as complete');
+                console.log('✅ Study marked as FULLY COMPLETE');
+            } catch (error) {
+                console.error('Error marking upload complete:', error);
+            }
+        }
+
+        // ============================================
+        // GOOGLE DRIVE UPLOAD FUNCTIONS (FIXED)
+        // ============================================
         function confirmUploaded() {
             const confirmed = confirm('✅ Confirm Upload\n\nHave you successfully uploaded the ZIP file to Google Drive?\n\nClick OK if yes, Cancel if you still need to upload.');
             if (confirmed) {
+                // Mark upload as complete
+                markUploadComplete();
+                
                 document.getElementById('directUploadSection').style.display = 'none';
                 document.getElementById('uploadSuccessSection').classList.remove('hidden');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
