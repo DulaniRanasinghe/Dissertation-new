@@ -686,6 +686,29 @@
     }
 });
 
+      // 🔥 ADD VISIBILITY CHANGE LISTENER TO REFRESH WHEN RETURNING TO TAB
+      document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) {
+          // Page became visible again - refresh status
+          const studyData = JSON.parse(localStorage.getItem('formStudyData') || '{}');
+          if (studyData.participantId) {
+            console.log('Page visible - refreshing status...');
+            updateCompletionStatus(studyData);
+            initializeStudyProgress(studyData);
+          }
+        }
+      });
+
+      // 🔥 ALSO REFRESH WHEN WINDOW GAINS FOCUS
+      window.addEventListener('focus', function() {
+        const studyData = JSON.parse(localStorage.getItem('formStudyData') || '{}');
+        if (studyData.participantId) {
+          console.log('Window focused - refreshing status...');
+          updateCompletionStatus(studyData);
+          initializeStudyProgress(studyData);
+        }
+      });
+
       // Check completion status from various localStorage keys
       function updateCompletionStatus(studyData) {
         // Check variant completions from logs
