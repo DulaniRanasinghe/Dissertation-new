@@ -94,13 +94,10 @@
                         <div class="flex-1">
                             <h4 class="font-bold text-2xl text-gray-900 mb-4">Upload to Google Drive</h4>
                             
-                            <!-- Direct link instead of button to avoid popup blocker -->
-                            <a href="https://drive.google.com/drive/folders/1YrwxScyDKWk0gJItd_hjykW9sLc6sKE5?usp=drive_link" 
-                               target="_blank"
-                               rel="noopener noreferrer"
-                               class="block w-full bg-blue-600 text-white px-8 py-6 rounded-xl font-bold text-2xl hover:bg-blue-700 transition shadow-lg hover:shadow-xl transform hover:scale-[1.02] mb-6 text-center">
+                            <button onclick="openDriveUpload()" 
+                                    class="w-full bg-blue-600 text-white px-8 py-6 rounded-xl font-bold text-2xl hover:bg-blue-700 transition shadow-lg hover:shadow-xl transform hover:scale-[1.02] mb-6">
                                 📁 Open Upload Folder
-                            </a>
+                            </button>
 
                             <div class="bg-blue-50 rounded-lg p-6">
                                 <p class="font-bold text-lg text-gray-900 mb-4">📝 Follow these steps:</p>
@@ -212,7 +209,8 @@
         // ============================================
         // CONFIGURATION
         // ============================================
-        const GOOGLE_DRIVE_FOLDER_URL = 'https://drive.google.com/drive/folders/1YrwxScyDKWk0gJItd_hjykW9sLc6sKE5?usp=drive_link';
+        const GOOGLE_DRIVE_FOLDER_URL = 'https://drive.https://drive.google.com/drive/folders/1YrwxScyDKWk0gJItd_hjykW9sLc6sKE5?usp=drive_link.com/drive/folders/YOUR_FOLDER_ID_HERE';
+        // ← REPLACE with your Google Drive folder link!
 
         // ============================================
         // DATA SUMMARY
@@ -572,8 +570,16 @@ For questions, contact the researcher.
         }
 
         // ============================================
-        // GOOGLE DRIVE UPLOAD FUNCTIONS (FIXED)
+        // GOOGLE DRIVE UPLOAD FUNCTIONS
         // ============================================
+        function openDriveUpload() {
+            window.open(GOOGLE_DRIVE_FOLDER_URL, '_blank');
+            setTimeout(() => {
+                const fileName = document.getElementById('fileName').textContent;
+                alert('📁 Google Drive Opened!\n\nRemember to:\n1. Click "New" → "File upload"\n2. Select: ' + fileName + '\n3. Wait for upload complete\n4. Return here and click "I\'ve Uploaded"');
+            }, 2000);
+        }
+
         function confirmUploaded() {
             const confirmed = confirm('✅ Confirm Upload\n\nHave you successfully uploaded the ZIP file to Google Drive?\n\nClick OK if yes, Cancel if you still need to upload.');
             if (confirmed) {
