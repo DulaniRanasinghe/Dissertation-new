@@ -217,7 +217,7 @@
         // ============================================
         // CONFIGURATION
         // ============================================
-        const GOOGLE_DRIVE_FOLDER_URL = 'https://drive.google.com/drive/folders/1YrwxScyDKWk0gJItd_hjykW9sLc6sKE5?usp=sharing';
+        const GOOGLE_DRIVE_FOLDER_URL = 'https://drive.google.com/drive/folders/1YrwxScyDKWk0gJItd_hjykW9sLc6sKE5?usp=drive_link';
 
         // ============================================
         // DATA SUMMARY
@@ -603,12 +603,19 @@ For questions, contact the researcher.
                 if (!studyData.status) {
                     studyData.status = {};
                 }
+                
+                // Add export status entry to match index.html expectations
+                studyData.status.export = { status: 'complete' };
+                
+                // Also set these flags for compatibility
                 studyData.status.dataUploaded = true;
                 studyData.status.uploadTimestamp = new Date().toISOString();
-                studyData.status.studyComplete = true; // 🔥 THIS IS THE KEY FLAG!
+                studyData.status.studyComplete = true;
+                
                 localStorage.setItem('formStudyData', JSON.stringify(studyData));
                 console.log('✅ Upload marked as complete');
                 console.log('✅ Study marked as FULLY COMPLETE');
+                console.log('Updated studyData:', studyData);
             } catch (error) {
                 console.error('Error marking upload complete:', error);
             }
