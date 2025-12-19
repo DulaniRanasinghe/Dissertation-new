@@ -366,7 +366,7 @@
             ></div>
           </div>
           <p class="text-sm text-gray-600 mt-2">
-            <span id="progressText">Step 0 of 7</span>
+            <span id="progressText">Step 0 of 8</span>
           </p>
         </div>
 
@@ -452,6 +452,7 @@
             nasa_b: { status: "pending" },
             nasa_c: { status: "pending" },
             interview: { status: "pending" },
+            export: { status: "pending" }, // 🔥 ADDED THIS!
           },
         };
 
@@ -531,13 +532,14 @@
         // Update previous task status
         previousTaskCompleted = interviewStatus === "complete";
 
-        // Add export task (locked until interview complete)
+        // Add export task (locked until interview complete) - 🔥 NOW WITH STATUS CHECKING!
+        const exportStatus = studyData.status.export?.status || "pending";
         const exportLocked = !previousTaskCompleted;
         taskHTML += createTaskCard(
           taskNumber++,
           "Export & Send Data",
           "Download your data as ZIP and send to researcher",
-          "pending",
+          exportStatus, // 🔥 NOW USES ACTUAL STATUS!
           "export-data.html",
           true,
           exportLocked
@@ -649,7 +651,7 @@
 
       // Update progress bar
       function updateProgress(studyData) {
-        const totalSteps = 7; // 3 forms + 3 NASA-TLX + 1 interview
+        const totalSteps = 8; // 🔥 CHANGED FROM 7 to 8 (3 forms + 3 NASA-TLX + 1 interview + 1 export)
         let completedSteps = 0;
 
         Object.values(studyData.status).forEach((task) => {
@@ -715,6 +717,8 @@
         if (interviews[studyData.participantId]) {
           studyData.status.interview = { status: "complete" };
         }
+
+        // 🔥 NO NEED TO CHECK EXPORT STATUS HERE - it gets set by export-data.html
 
         // Save updated status
         localStorage.setItem("formStudyData", JSON.stringify(studyData));
