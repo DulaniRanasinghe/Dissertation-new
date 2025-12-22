@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Variant B - Multi-Step Form</title>
+    <title>Variant B - Multi-Step Form with Chunking</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script
       crossorigin
@@ -596,27 +596,25 @@
           });
         };
 
-        const handleNext = () => {
-          addLog("navigationAttempt", { action: "next" });
-          if (validateStep(step)) {
-            addLog("navigationSuccess", { action: "next" });
-            setStep((prev) => prev + 1);
-            window.scrollTo({ top: 0, behavior: "smooth" });
-          } else {
-            addLog("navigationBlock", {
-              action: "next",
-              reason: "validation_errors",
-              errorCount: Object.keys(errors).length,
-              errorCategories: errorCategories,
-            });
-            if (errorModalRef.current) {
-              errorModalRef.current.style.display = "flex";
-              setTimeout(() => {
-                errorModalRef.current.style.display = "none";
-              }, 3000);
-            }
-          }
-        };
+      const handleNext = () => {
+        addLog("navigationAttempt", { action: "next" });
+  
+        if (!validateStep(step)) {
+          // Show brief warning but don't block
+          addLog("navigationWarning", {
+            action: "next",
+            reason: "incomplete_fields",
+            errorCount: Object.keys(errors).length,
+          });
+                
+          // Optional: show brief warning message (doesn't block)
+          console.warn("Some fields incomplete, but allowing user to proceed");
+        }
+        
+        // Proceed to next step
+        setStep((prev) => prev + 1);
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      };
 
         const handleBack = () => {
           addLog("navigationAttempt", { action: "back" });
