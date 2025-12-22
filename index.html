@@ -46,11 +46,11 @@
             </h2>
             <p class="text-gray-700 mb-3">
               Thank you for participating in this user experience research
-              study! This study compares three different form designs to
+              study! This study compares four different form designs to
               understand which provides the best user experience.
             </p>
             <p class="text-gray-700">
-              <strong>Duration:</strong> Approximately 20-30 minutes<br />
+              <strong>Duration:</strong> Approximately 60-75 minutes<br />
               <strong>Participants:</strong> 24 total (You will be assigned an
               ID from P001 to P024)
             </p>
@@ -66,20 +66,20 @@
                 This ID will be used throughout the entire session
               </li>
               <li>
-                <strong>Complete THREE different form designs</strong> - Each
+                <strong>Complete FOUR different form designs</strong> - Each
                 form asks for the same information but presents it differently:
                 <ul class="list-disc ml-6 mt-2">
                   <li>
-                    <strong>Variant A:</strong> Single-page form (all fields on
-                    one page)
+                    <strong>Variant A:</strong> Multi-step control (random field order, free navigation)
                   </li>
                   <li>
-                    <strong>Variant B:</strong> Multi-step wizard (divided into
-                    sections)
+                    <strong>Variant B:</strong> Multi-step with chunking (organized fields, free navigation)
                   </li>
                   <li>
-                    <strong>Variant C:</strong> Progressive disclosure (fields
-                    appear as you progress)
+                    <strong>Variant C:</strong> Multi-step with progressive disclosure (random fields, locked navigation)
+                  </li>
+                  <li>
+                    <strong>Variant D:</strong> Multi-step with both strategies (organized fields, locked navigation)
                   </li>
                 </ul>
               </li>
@@ -123,7 +123,7 @@
               </li>
               <li>
                 <strong>Complete all forms in one sitting</strong> - The entire
-                study should take 20-30 minutes
+                study should take 60-75 minutes
               </li>
               <li>
                 <strong>Your Participant ID</strong> will be remembered
@@ -230,6 +230,19 @@
                   5
                 </div>
                 <div>
+                  <strong>Form 4</strong> → <strong>NASA-TLX</strong>
+                  <p class="text-sm">
+                    Complete fourth form variant, then rate the workload
+                  </p>
+                </div>
+              </div>
+              <div class="flex items-start">
+                <div
+                  class="flex-shrink-0 w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold mr-3"
+                >
+                  6
+                </div>
+                <div>
                   <strong>Post-Study Interview</strong>
                   <p class="text-sm">
                     Answer 8 questions about your experience (audio recorded)
@@ -240,7 +253,7 @@
                 <div
                   class="flex-shrink-0 w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center font-bold mr-3"
                 >
-                  6
+                  7
                 </div>
                 <div>
                   <strong>Export & Send Data</strong>
@@ -267,7 +280,7 @@
                 work best)
               </li>
               <li>
-                <strong>Have about 30 minutes</strong> of uninterrupted time
+                <strong>Have about 75 minutes</strong> of uninterrupted time
               </li>
               <li>
                 <strong>Enable microphone access</strong> when prompted (for
@@ -339,8 +352,8 @@
           <div class="mt-6 p-4 bg-gray-50 rounded">
             <p class="text-sm text-gray-600">
               <strong>Note:</strong> Your Participant ID determines the order in
-              which you'll see the three form variants. This is automatically
-              balanced across all participants using a Latin Square design.
+              which you'll see the four form variants. This is automatically
+              balanced across all participants using a 4x4 Latin Square design.
             </p>
           </div>
         </div>
@@ -366,7 +379,7 @@
             ></div>
           </div>
           <p class="text-sm text-gray-600 mt-2">
-            <span id="progressText">Step 0 of 8</span>
+            <span id="progressText">Step 0 of 7</span>
           </p>
         </div>
 
@@ -384,17 +397,18 @@
     </div>
 
     <script>
-      // Latin Square counterbalancing for 24 participants
-      // Pattern repeats every 3 participants to ensure balance
+      // Latin Square counterbalancing for 4 variants, 24 participants
+      // 4x4 Latin Square repeated 6 times (4 x 6 = 24 participants)
       const LATIN_SQUARE = {
-        1: ["A", "B", "C"], // P001, P004, P007, P010, P013, P016, P019, P022
-        2: ["B", "C", "A"], // P002, P005, P008, P011, P014, P017, P020, P023
-        3: ["C", "A", "B"], // P003, P006, P009, P012, P015, P018, P021, P024
+        1: ["A", "B", "C", "D"], // P001, P005, P009, P013, P017, P021
+        2: ["B", "C", "D", "A"], // P002, P006, P010, P014, P018, P022
+        3: ["C", "D", "A", "B"], // P003, P007, P011, P015, P019, P023
+        4: ["D", "A", "B", "C"], // P004, P008, P012, P016, P020, P024
       };
 
       // Get form order based on participant number
       function getFormOrder(participantNumber) {
-        const pattern = ((participantNumber - 1) % 3) + 1;
+        const pattern = ((participantNumber - 1) % 4) + 1;
         return LATIN_SQUARE[pattern];
       }
 
@@ -448,11 +462,12 @@
             A: { status: "pending" },
             B: { status: "pending" },
             C: { status: "pending" },
+            D: { status: "pending" },
             nasa_a: { status: "pending" },
             nasa_b: { status: "pending" },
             nasa_c: { status: "pending" },
+            nasa_d: { status: "pending" },
             interview: { status: "pending" },
-            export: { status: "pending" }, // 🔥 ADDED THIS!
           },
         };
 
@@ -524,7 +539,7 @@
           "Post-Study Interview",
           "Answer 8 questions about your experience (audio recorded)",
           interviewStatus,
-          `Interviews.html?participant=${studyData.participantId}&variant=${formOrder[2]}`,
+          `Interviews.html?participant=${studyData.participantId}&variant=${formOrder[3]}`,
           false,
           interviewLocked
         );
@@ -532,14 +547,13 @@
         // Update previous task status
         previousTaskCompleted = interviewStatus === "complete";
 
-        // Add export task (locked until interview complete) - 🔥 NOW WITH STATUS CHECKING!
-        const exportStatus = studyData.status.export?.status || "pending";
+        // Add export task (locked until interview complete)
         const exportLocked = !previousTaskCompleted;
         taskHTML += createTaskCard(
           taskNumber++,
           "Export & Send Data",
           "Download your data as ZIP and send to researcher",
-          exportStatus, // 🔥 NOW USES ACTUAL STATUS!
+          "pending",
           "export-data.html",
           true,
           exportLocked
@@ -552,9 +566,10 @@
       // Get variant description
       function getVariantDescription(variant) {
         const descriptions = {
-          A: "Single-page form - All fields on one page",
-          B: "Multi-step wizard - Divided into sections",
-          C: "Progressive disclosure - Fields appear as you progress",
+          A: "Control - Multi-step with random field order, free navigation",
+          B: "Chunking - Multi-step with organized fields, free navigation",
+          C: "Progressive Disclosure - Multi-step with random fields, locked navigation",
+          D: "Both Strategies - Multi-step with organized fields, locked navigation",
         };
         return descriptions[variant];
       }
@@ -651,7 +666,7 @@
 
       // Update progress bar
       function updateProgress(studyData) {
-        const totalSteps = 8; // 🔥 CHANGED FROM 7 to 8 (3 forms + 3 NASA-TLX + 1 interview + 1 export)
+        const totalSteps = 9; // 4 forms + 4 NASA-TLX + 1 interview
         let completedSteps = 0;
 
         Object.values(studyData.status).forEach((task) => {
@@ -686,33 +701,10 @@
     }
 });
 
-      // 🔥 ADD VISIBILITY CHANGE LISTENER TO REFRESH WHEN RETURNING TO TAB
-      document.addEventListener('visibilitychange', function() {
-        if (!document.hidden) {
-          // Page became visible again - refresh status
-          const studyData = JSON.parse(localStorage.getItem('formStudyData') || '{}');
-          if (studyData.participantId) {
-            console.log('Page visible - refreshing status...');
-            updateCompletionStatus(studyData);
-            initializeStudyProgress(studyData);
-          }
-        }
-      });
-
-      // 🔥 ALSO REFRESH WHEN WINDOW GAINS FOCUS
-      window.addEventListener('focus', function() {
-        const studyData = JSON.parse(localStorage.getItem('formStudyData') || '{}');
-        if (studyData.participantId) {
-          console.log('Window focused - refreshing status...');
-          updateCompletionStatus(studyData);
-          initializeStudyProgress(studyData);
-        }
-      });
-
       // Check completion status from various localStorage keys
       function updateCompletionStatus(studyData) {
         // Check variant completions from logs
-        ["A", "B", "C"].forEach((variant) => {
+        ["A", "B", "C","D"].forEach((variant) => {
           const logs = JSON.parse(
             localStorage.getItem(`logs_${variant}`) || "{}"
           );
@@ -722,7 +714,7 @@
         });
 
         // Check NASA-TLX completions
-        ["A", "B", "C"].forEach((variant) => {
+        ["A", "B", "C","D"].forEach((variant) => {
           const nasaData = JSON.parse(
             localStorage.getItem(`nasa_tlx_${variant}`) || "{}"
           );
@@ -740,8 +732,6 @@
         if (interviews[studyData.participantId]) {
           studyData.status.interview = { status: "complete" };
         }
-
-        // 🔥 NO NEED TO CHECK EXPORT STATUS HERE - it gets set by export-data.html
 
         // Save updated status
         localStorage.setItem("formStudyData", JSON.stringify(studyData));
