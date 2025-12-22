@@ -21,6 +21,7 @@
                     <li>variant_a_data.csv - Detailed field-level analytics for Variant A</li>
                     <li>variant_b_data.csv - Detailed field-level analytics for Variant B</li>
                     <li>variant_c_data.csv - Detailed field-level analytics for Variant C</li>
+                    <li>variant_d_data.csv - Detailed field-level analytics for Variant D</li>
                     <li>nasa_tlx_data.csv - All NASA-TLX workload scores</li>
                     <li>interview_data.csv - Interview metadata</li>
                     <li>audio/ folder - All interview audio recordings</li>
@@ -41,6 +42,10 @@
                     <div class="p-3 bg-white rounded shadow-sm">
                         <p class="text-sm text-gray-600">Variant C Submissions</p>
                         <p class="text-2xl font-bold text-indigo-600" id="countVariantC">0</p>
+                    </div>
+                    <div class="p-3 bg-white rounded shadow-sm">
+                        <p class="text-sm text-gray-600">Variant D Submissions</p>
+                        <p class="text-2xl font-bold text-indigo-600" id="countVariantD">0</p>
                     </div>
                     <div class="p-3 bg-white rounded shadow-sm">
                         <p class="text-sm text-gray-600">NASA-TLX Responses</p>
@@ -94,13 +99,10 @@
                         <div class="flex-1">
                             <h4 class="font-bold text-2xl text-gray-900 mb-4">Upload to Google Drive</h4>
                             
-                            <!-- Direct link instead of button to avoid popup blocker -->
-                            <a href="https://drive.google.com/drive/folders/1YrwxScyDKWk0gJItd_hjykW9sLc6sKE5?usp=sharing" 
-                               target="_blank"
-                               rel="noopener noreferrer"
-                               class="block w-full bg-blue-600 text-white px-8 py-6 rounded-xl font-bold text-2xl hover:bg-blue-700 transition shadow-lg hover:shadow-xl transform hover:scale-[1.02] mb-6 text-center">
+                            <button onclick="openDriveUpload()" 
+                                    class="w-full bg-blue-600 text-white px-8 py-6 rounded-xl font-bold text-2xl hover:bg-blue-700 transition shadow-lg hover:shadow-xl transform hover:scale-[1.02] mb-6">
                                 📁 Open Upload Folder
-                            </a>
+                            </button>
 
                             <div class="bg-blue-50 rounded-lg p-6">
                                 <p class="font-bold text-lg text-gray-900 mb-4">📝 Follow these steps:</p>
@@ -203,11 +205,6 @@
                         🙏 Thank you for participating in this research study!
                     </p>
                 </div>
-                
-                <button onclick="window.location.href='index.html'" 
-                        class="bg-indigo-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-indigo-700 transition">
-                    Return to Home
-                </button>
             </div>
         </div>
 
@@ -218,6 +215,7 @@
         // CONFIGURATION
         // ============================================
         const GOOGLE_DRIVE_FOLDER_URL = 'https://drive.google.com/drive/folders/1YrwxScyDKWk0gJItd_hjykW9sLc6sKE5?usp=drive_link';
+        // ← REPLACE with your Google Drive folder link!
 
         // ============================================
         // DATA SUMMARY
@@ -226,12 +224,14 @@
             const logsA = JSON.parse(localStorage.getItem('logs_A') || '{}');
             const logsB = JSON.parse(localStorage.getItem('logs_B') || '{}');
             const logsC = JSON.parse(localStorage.getItem('logs_C') || '{}');
+            const logsD = JSON.parse(localStorage.getItem('logs_D') || '{}');
             const interviews = JSON.parse(localStorage.getItem('interviews') || '{}');
             
             const nasaA = JSON.parse(localStorage.getItem('nasa_tlx_A') || '{}');
             const nasaB = JSON.parse(localStorage.getItem('nasa_tlx_B') || '{}');
             const nasaC = JSON.parse(localStorage.getItem('nasa_tlx_C') || '{}');
-            const totalNASA = Object.keys(nasaA).length + Object.keys(nasaB).length + Object.keys(nasaC).length;
+            const nasaD = JSON.parse(localStorage.getItem('nasa_tlx_D') || '{}');
+            const totalNASA = Object.keys(nasaA).length + Object.keys(nasaB).length + Object.keys(nasaC).length + Object.keys(nasaD).length;
             
             let audioCount = 0;
             Object.values(interviews).forEach(interview => {
@@ -243,6 +243,7 @@
             document.getElementById('countVariantA').textContent = Object.keys(logsA).length;
             document.getElementById('countVariantB').textContent = Object.keys(logsB).length;
             document.getElementById('countVariantC').textContent = Object.keys(logsC).length;
+            document.getElementById('countVariantD').textContent = Object.keys(logsD).length;
             document.getElementById('countNASA').textContent = totalNASA;
             document.getElementById('countInterviews').textContent = Object.keys(interviews).length;
             document.getElementById('countAudio').textContent = audioCount;
@@ -403,7 +404,7 @@
         function exportNASATLXData() {
             const data = [];
             
-            ['A', 'B', 'C'].forEach(variant => {
+            ['A', 'B', 'C', 'D'].forEach(variant => {
                 const nasaData = JSON.parse(localStorage.getItem(`nasa_tlx_${variant}`) || '{}');
                 Object.entries(nasaData).forEach(([participantId, scores]) => {
                     data.push({
@@ -473,15 +474,19 @@
                 const variantACSV = exportDetailedVariantData('A');
                 if (variantACSV) zip.file('variant_a_data.csv', variantACSV);
                 
-                updateProgress(20, 'Exporting Variant B data...');
+                updateProgress(18, 'Exporting Variant B data...');
                 const variantBCSV = exportDetailedVariantData('B');
                 if (variantBCSV) zip.file('variant_b_data.csv', variantBCSV);
                 
-                updateProgress(30, 'Exporting Variant C data...');
+                updateProgress(26, 'Exporting Variant C data...');
                 const variantCCSV = exportDetailedVariantData('C');
                 if (variantCCSV) zip.file('variant_c_data.csv', variantCCSV);
                 
-                updateProgress(40, 'Exporting NASA-TLX data...');
+                updateProgress(34, 'Exporting Variant D data...');
+                const variantDCSV = exportDetailedVariantData('D');
+                if (variantDCSV) zip.file('variant_d_data.csv', variantDCSV);
+                
+                updateProgress(42, 'Exporting NASA-TLX data...');
                 const nasaCSV = exportNASATLXData();
                 if (nasaCSV) zip.file('nasa_tlx_data.csv', nasaCSV);
                 
@@ -537,9 +542,10 @@ Files:
 1. variant_a_data.csv - Variant A with 60+ columns
 2. variant_b_data.csv - Variant B with 60+ columns
 3. variant_c_data.csv - Variant C with 60+ columns
-4. nasa_tlx_data.csv - NASA-TLX workload scores
-5. interview_data.csv - Interview metadata
-6. audio/ - Interview audio recordings
+4. variant_d_data.csv - Variant D with 60+ columns
+5. nasa_tlx_data.csv - NASA-TLX workload scores
+6. interview_data.csv - Interview metadata
+7. audio/ - Interview audio recordings
 
 For questions, contact the researcher.
 `;
@@ -559,9 +565,6 @@ For questions, contact the researcher.
                 document.body.removeChild(a);
                 URL.revokeObjectURL(url);
                 
-                // Mark export as complete
-                markExportComplete();
-                
                 setTimeout(() => {
                     document.getElementById('mainSection').classList.add('hidden');
                     document.getElementById('directUploadSection').classList.remove('hidden');
@@ -580,56 +583,19 @@ For questions, contact the researcher.
         }
 
         // ============================================
-        // COMPLETION TRACKING
+        // GOOGLE DRIVE UPLOAD FUNCTIONS
         // ============================================
-        function markExportComplete() {
-            try {
-                const studyData = JSON.parse(localStorage.getItem('formStudyData') || '{}');
-                if (!studyData.status) {
-                    studyData.status = {};
-                }
-                studyData.status.dataExported = true;
-                studyData.status.exportTimestamp = new Date().toISOString();
-                localStorage.setItem('formStudyData', JSON.stringify(studyData));
-                console.log('✅ Export marked as complete');
-            } catch (error) {
-                console.error('Error marking export complete:', error);
-            }
+        function openDriveUpload() {
+            window.open(GOOGLE_DRIVE_FOLDER_URL, '_blank');
+            setTimeout(() => {
+                const fileName = document.getElementById('fileName').textContent;
+                alert('📁 Google Drive Opened!\n\nRemember to:\n1. Click "New" → "File upload"\n2. Select: ' + fileName + '\n3. Wait for upload complete\n4. Return here and click "I\'ve Uploaded"');
+            }, 2000);
         }
 
-        function markUploadComplete() {
-            try {
-                const studyData = JSON.parse(localStorage.getItem('formStudyData') || '{}');
-                if (!studyData.status) {
-                    studyData.status = {};
-                }
-                
-                // Add export status entry to match index.html expectations
-                studyData.status.export = { status: 'complete' };
-                
-                // Also set these flags for compatibility
-                studyData.status.dataUploaded = true;
-                studyData.status.uploadTimestamp = new Date().toISOString();
-                studyData.status.studyComplete = true;
-                
-                localStorage.setItem('formStudyData', JSON.stringify(studyData));
-                console.log('✅ Upload marked as complete');
-                console.log('✅ Study marked as FULLY COMPLETE');
-                console.log('Updated studyData:', studyData);
-            } catch (error) {
-                console.error('Error marking upload complete:', error);
-            }
-        }
-
-        // ============================================
-        // GOOGLE DRIVE UPLOAD FUNCTIONS (FIXED)
-        // ============================================
         function confirmUploaded() {
             const confirmed = confirm('✅ Confirm Upload\n\nHave you successfully uploaded the ZIP file to Google Drive?\n\nClick OK if yes, Cancel if you still need to upload.');
             if (confirmed) {
-                // Mark upload as complete
-                markUploadComplete();
-                
                 document.getElementById('directUploadSection').style.display = 'none';
                 document.getElementById('uploadSuccessSection').classList.remove('hidden');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
