@@ -444,7 +444,10 @@
                 ? "VariantA.html"
                 : nextVariant === "B"
                 ? "VariantB.html"
-                : "VariantC.html";
+                : nextVariant === "C"
+                ? "VariantC.html"
+                : "VariantD.html"
+                ;
 
             document
               .getElementById("results")
@@ -459,4 +462,3 @@
     </script>
   </body>
 </html>
-
